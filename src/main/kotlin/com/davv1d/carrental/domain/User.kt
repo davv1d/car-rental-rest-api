@@ -7,7 +7,7 @@ import javax.persistence.*
 data class User(
         @Id
         @GeneratedValue
-        @Column(name = "USER_ID", nullable = false)
+        @Column(name = "ID", nullable = false)
         val id: Int = 0,
         @Column(name = "USERNAME", length = 20, unique = true, nullable = false)
         val username: String,
@@ -17,9 +17,5 @@ data class User(
         val email: String,
         @ManyToOne(targetEntity = Role::class, fetch = FetchType.EAGER)
         @JoinColumn(name = "ROLE_ID", nullable = false)
-        val role: Role) {
-
-    override fun toString(): String {
-        return "User(id=$id, username='$username', password='$password', email='$email')"
-    }
-}
+        val role: Role
+)

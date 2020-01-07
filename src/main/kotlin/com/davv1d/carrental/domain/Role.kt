@@ -7,7 +7,8 @@ import javax.persistence.*
 data class Role(
         @Id
         @GeneratedValue
-        @Column(name = "ROLE_ID", nullable = false)
+        @Column(name = "ID", nullable = false)
         val id: Int = 0,
-        @Column(name = "ROLE_NAME", length = 20, unique = true, nullable = false)
-        val name: String)
+        @Column(name = "NAME", length = 20, unique = true, nullable = false)
+        val name: String
+)
