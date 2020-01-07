@@ -13,4 +13,5 @@ interface UserRepository : CrudRepository<User, Int> {
     fun findByUsername(username: String): User?
     fun findByEmail(email: String): User?
     override fun findAll(): List<User>
+    fun deleteByUsername(username: String)
 }

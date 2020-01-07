@@ -2,7 +2,7 @@ package com.davv1d.carrental.constants
 
 private const val NOT_BLANK: String = "must not be blank"
 const val USERNAME_NOT_BLANK: String = "username $NOT_BLANK"
-const val EMAIL_NOT_BLANK: String = "email $NOT_BLANK"
+const val INCORRECT_EMAIL: String = "e-mail address is incorrect"
 const val PASSWORD_NOT_BLANK: String = "password $NOT_BLANK"
 const val ROLE_NOT_BLANK: String = "role $NOT_BLANK"
 

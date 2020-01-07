@@ -48,4 +48,8 @@ class UserService(
 
 
     fun secureSave(user: User): Result<User> = generalService.secureSave(user, userRepository::save)
+
+    fun deleteUserByUsername(username: String): Result<Unit> {
+        return getUserByName(username).map { userRepository.deleteByUsername(it.username) }
+    }
 }
