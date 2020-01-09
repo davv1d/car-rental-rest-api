@@ -9,10 +9,8 @@ data class Location(
         @GeneratedValue
         @Column(name = "ID", nullable = false)
         val id: Int = 0,
-        @Column(name = "COUNTRY", length = 40, nullable = false)
-        val country: String,
         @Column(name = "CITY", length = 40, nullable = false)
         val city: String,
-        @Column(name = "ADDRESS", length = 100, nullable = false)
-        val address: String
+        @Column(name = "STREET", length = 100, nullable = false)
+        val street: String
 )
