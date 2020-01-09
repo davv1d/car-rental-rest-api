@@ -10,5 +10,11 @@ data class Role(
         @Column(name = "ID", nullable = false)
         val id: Int = 0,
         @Column(name = "NAME", length = 20, unique = true, nullable = false)
-        val name: String
+        val name: String,
+        @ManyToMany(fetch = FetchType.EAGER)
+        @JoinTable(
+                name = "roles_privileges",
+                joinColumns = [JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")],
+                inverseJoinColumns = [JoinColumn(name = "PRIVILEGE_ID", referencedColumnName = "ID")])
+        val privileges: List<Privilege> = emptyList()
 )

@@ -1,29 +1,21 @@
 package com.davv1d.carrental.controller
 
-import com.davv1d.carrental.domain.RegistrationDto
 import com.davv1d.carrental.domain.UserDto
 import com.davv1d.carrental.mapper.UserMapper
-import com.davv1d.carrental.repository.RoleRepository
-import com.davv1d.carrental.repository.UserRepository
+import com.davv1d.carrental.security.JwtProvider
 import com.davv1d.carrental.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
-import javax.validation.Valid
-import javax.validation.constraints.NotBlank
-import org.springframework.web.bind.annotation.RequestParam as RequestParam1
 
 @RestController
-class UserController(private val userService: UserService, private val userMapper: UserMapper) {
+class UserController(private val userService: UserService, private val userMapper: UserMapper, private val authenticationManager: AuthenticationManager, val jwtProvider: JwtProvider) {
     private val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
-
-    @PostMapping("/test")
-    fun test(@RequestBody @Valid registrationDto: RegistrationDto): UserDto {
-        return userService.save(userMapper.mapToUser(registrationDto))
-                .effect(onSuccess = userMapper::mapToUserDto, onFailure = { exception -> logger.error(exception.message) }, onEmpty = { UserDto() })
-    }
 
     @GetMapping(value = ["/user"], params = ["name"])
     fun getUserByName(name: String): UserDto {
