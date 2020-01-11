@@ -65,6 +65,8 @@ sealed class Result<out A> : Serializable {
 
     abstract fun <B> effect(onSuccess: (A) -> B, onFailure: (RuntimeException) -> Unit= {}, onEmpty: () -> B): B
 
+    abstract fun isFailure(): Boolean
+    abstract fun message(): String
     internal object Empty : Result<Nothing>() {
 
         override fun mapEmpty(): Result<Any> = Result(Any())
@@ -86,6 +88,12 @@ sealed class Result<out A> : Serializable {
         override fun toString(): String = "Empty"
 
         override fun <B> effect(onSuccess: (Nothing) -> B, onFailure: (RuntimeException) -> Unit, onEmpty: () -> B): B = onEmpty()
+
+
+
+        override fun isFailure(): Boolean = false
+        override fun message(): String = "Result.empty"
+
     }
 
     internal class Failure<out A>(internal val exception: RuntimeException) : Result<A>() {
@@ -115,6 +123,9 @@ sealed class Result<out A> : Serializable {
             onFailure(exception)
             throw exception
         }
+
+        override fun isFailure(): Boolean = true
+        override fun message(): String = exception.message ?: "Result.failure"
     }
 
     internal class Success<out A>(internal val value: A) : Result<A>() {
@@ -149,6 +160,8 @@ sealed class Result<out A> : Serializable {
 
         override fun toString(): String = "Success($value)"
         override fun <B> effect(onSuccess: (A) -> B, onFailure: (RuntimeException) -> Unit, onEmpty: () -> B): B = onSuccess(value)
+        override fun isFailure(): Boolean = false
+        override fun message(): String = "Result.success"
     }
 
     companion object {

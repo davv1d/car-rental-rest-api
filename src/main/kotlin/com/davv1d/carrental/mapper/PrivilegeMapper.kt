@@ -7,16 +7,22 @@ import org.springframework.stereotype.Component
 @Component
 class PrivilegeMapper {
     fun mapToPrivilegeDto(privilege: Privilege): PrivilegeDto = with(privilege) { PrivilegeDto(name) }
-    fun mapToPrivilegeDtoList(privileges: List<Privilege>): List<PrivilegeDto> {
+    fun mapToPrivilegeDtoList(privileges: Set<Privilege>): List<PrivilegeDto> {
         return privileges.asSequence()
                 .map(this::mapToPrivilegeDto)
                 .toList()
     }
 
     fun mapToPrivilege(privilegeDto: PrivilegeDto): Privilege = with(privilegeDto) { Privilege(name = name) }
-    fun mapToPrivilegeList(privilegeDtoList: List<PrivilegeDto>): List<Privilege> {
+    fun mapToPrivilegeSet(privilegeDtoList: List<PrivilegeDto>): Set<Privilege> {
         return privilegeDtoList.asSequence()
                 .map(this::mapToPrivilege)
-                .toList()
+                .toSet()
+    }
+
+    fun mapToNameSet(privileges: Set<Privilege>): Set<String> {
+        return privileges.asSequence()
+                .map { privilege -> privilege.name }
+                .toSet()
     }
 }

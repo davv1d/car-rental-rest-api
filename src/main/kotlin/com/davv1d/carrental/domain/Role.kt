@@ -16,5 +16,5 @@ data class Role(
                 name = "roles_privileges",
                 joinColumns = [JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")],
                 inverseJoinColumns = [JoinColumn(name = "PRIVILEGE_ID", referencedColumnName = "ID")])
-        val privileges: List<Privilege> = emptyList()
+        val privileges: Set<Privilege> = emptySet()
 )

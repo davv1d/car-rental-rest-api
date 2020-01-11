@@ -14,8 +14,14 @@ import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 
 @RestController
-class UserController(private val userService: UserService, private val userMapper: UserMapper, private val authenticationManager: AuthenticationManager, val jwtProvider: JwtProvider) {
+class UserController(private val userService: UserService, private val userMapper: UserMapper) {
     private val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
+
+    @GetMapping(value = ["/logged-user"])
+    fun getLoggedUser(principal: Principal): UserDto {
+        return userService.getUserByName(principal.name)
+                .effect(onSuccess = userMapper::mapToUserDto, onFailure = { exception -> logger.error(exception.message) }, onEmpty = { UserDto() })
+    }
 
     @GetMapping(value = ["/user"], params = ["name"])
     fun getUserByName(name: String): UserDto {

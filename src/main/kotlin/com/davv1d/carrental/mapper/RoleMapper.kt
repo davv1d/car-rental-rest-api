@@ -14,7 +14,7 @@ class RoleMapper(val privilegeMapper: PrivilegeMapper) {
 
     fun mapToRole(roleDto: RoleDto): Role {
         return with(roleDto) {
-            Role(name = roleName, privileges = privilegeMapper.mapToPrivilegeList(privileges))
+            Role(name = roleName, privileges = privilegeMapper.mapToPrivilegeSet(privileges))
         }
     }
 }
