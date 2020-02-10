@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class RoleMapper(val privilegeMapper: PrivilegeMapper) {
-    fun mapToRoleDto(role: Role): RoleDto = with(role) { RoleDto(name, privilegeMapper.mapToPrivilegeDtoList(privileges)) }
+    fun mapToRoleDto(role: Role): RoleDto = with(role) { RoleDto(id, name, privilegeMapper.mapToPrivilegeDtoList(privileges)) }
     fun mapToRoleDtoList(roles: List<Role>): List<RoleDto> =
             roles.asSequence()
                     .map { role: Role -> this.mapToRoleDto(role) }
