@@ -24,5 +24,22 @@ class VehicleController(private val vehicleService: VehicleService, private val 
     }
 
     @GetMapping(value = ["/vehicle"])
-    fun getAllVehicles(): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getAllVehicle())
+    fun getAllVehicles(): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getAll())
+
+    @GetMapping(value = ["/vehicle"], params = ["registration"])
+    fun getByRegistration(registration: String): VehicleDto {
+        return vehicleService.getByRegistration(registration)
+                .effect(onSuccess = vehicleMapper::mapToVehicleDto, onFailure = { exception -> logger.error(exception.message) }, onEmpty = { VehicleDto() })
+    }
+
+    @GetMapping(value = ["/vehicle"], params = ["brand"])
+    fun getByBrand(brand: String): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getByBrand(brand))
+
+
+    @GetMapping(value = ["/vehicle"], params = ["fuelType"])
+    fun getByFuelType(fuelType: String): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getByFuelType(fuelType))
+
+
+    @GetMapping(value = ["/vehicle"], params = ["city", "street"])
+    fun getByLocation(city: String, street: String): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getByLocation(city, street))
 }

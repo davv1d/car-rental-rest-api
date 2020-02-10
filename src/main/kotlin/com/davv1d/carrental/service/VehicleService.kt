@@ -1,6 +1,7 @@
 package com.davv1d.carrental.service
 
 import com.davv1d.carrental.domain.Vehicle
+import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.VehicleRepository
 import com.davv1d.carrental.validate.ConditionValidator
@@ -13,7 +14,18 @@ class VehicleService(
         private val generalService: GeneralService,
         private val locationService: LocationService) {
 
-    fun getAllVehicle(): List<Vehicle> = vehicleRepository.findAll()
+    fun getAll(): List<Vehicle> = vehicleRepository.findAll()
+
+    fun getByRegistration(registration: String): Result<Vehicle> = generalService.getByValue(
+            value = registration,
+            error = NotFoundElementException("VEHICLE_WITH_THIS_REGISTRATION_IS_NOT_EXIST"),
+            function = vehicleRepository::findByRegistration)
+
+    fun getByBrand(brand: String): List<Vehicle> = vehicleRepository.findByBrand(brand)
+
+    fun getByFuelType(fuelType: String): List<Vehicle> = vehicleRepository.findByFuelType(fuelType)
+
+    fun getByLocation(city: String, street: String) = vehicleRepository.findByLocation(city, street)
 
     fun save(vehicle: Vehicle): Result<Vehicle> {
         return vehicleValidator.dbValidate(vehicle)

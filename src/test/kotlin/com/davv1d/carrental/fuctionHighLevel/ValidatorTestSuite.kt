@@ -39,6 +39,9 @@ class ValidatorTestSuite(
         val vehicle = Vehicle(0, "WML", "AUDI", "A6", BigDecimal.ONE, Location(100, "CITY", "STREET"), "SEDAN", 1998, "DIESEL", 110)
         val save = vehicleService.save(vehicle)
         println(save)
+
+        val findByLocation = vehicleRepository.findByLocation("city", "Street")
+        println(findByLocation)
 //        val vehicle2 = Vehicle(0, "WML", "AUDI", "A6", BigDecimal.ONE, location2, "SEDAN", 1998, "DIESEL", 110)
 //        val save2 = vehicleService.save(vehicle2)
 //        val role = Role(name = "admin")

@@ -11,7 +11,7 @@ import javax.transaction.Transactional
 interface PrivilegeRepository : CrudRepository<Privilege, Int> {
     fun existsByName(name: String): Boolean
     override fun findAll(): Set<Privilege>
-    @Query(value = "select case when count(p) = 0 then true else false end from Privilege p where p.name like :name")
+    @Query(value = "select case when count(p) = 0 then true else false end from Privilege p where upper(p.name) like upper(:name)")
     fun doesNotExistByName(name: String): Boolean
 
     @Query(value = "select p from Privilege p where p.name in (:names)")
