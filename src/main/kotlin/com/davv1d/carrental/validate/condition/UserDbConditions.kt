@@ -15,7 +15,7 @@ class UserDbConditions(private val roleRepository: RoleRepository, private val u
     override fun get(value: User): List<Condition<User>> {
         val con1 = Condition(value, USERNAME_EXIST_IN_DATABASE, { u -> userRepository.existsByUsername(u.username) })
         val con2 = Condition(value, EMAIL_EXIST_IN_DATABASE, { u -> userRepository.existsByEmail(u.email) })
-        val con3 = Condition(value, ROLE_WITH_THIS_NAME_IS_NOT_EXIST, { u -> roleRepository.doesNotExistByName(u.role.name) })
+        val con3 = Condition(value, ROLE_WITH_THIS_NAME_IS_NOT_EXIST, { u -> roleRepository.doesRoleNotExistByName(u.role.name) })
         return listOf(con1, con2, con3)
     }
 }

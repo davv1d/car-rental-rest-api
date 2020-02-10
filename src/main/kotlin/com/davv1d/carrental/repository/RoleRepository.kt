@@ -13,7 +13,7 @@ interface RoleRepository : CrudRepository<Role, String> {
     fun existsByName(name: String): Boolean
 
     @Query(value = "select case when count(r) = 0 then true else false end from Role r where r.name like :name")
-    fun doesNotExistByName(name: String): Boolean
+    fun doesRoleNotExistByName(name: String): Boolean
 
     override fun findAll(): List<Role>
 }

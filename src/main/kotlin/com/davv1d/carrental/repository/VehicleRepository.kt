@@ -12,5 +12,5 @@ interface VehicleRepository : CrudRepository<Vehicle, Int> {
     override fun findAll(): List<Vehicle>
 
     @Query(value = "select case when count(v) > 0 then true else false end from Vehicle v where v.registration like :registration")
-    fun isRegistrationExist(registration: String): Boolean
+    fun doesRegistrationExist(registration: String): Boolean
 }
