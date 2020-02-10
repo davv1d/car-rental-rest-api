@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 class LocationController(private val locationService: LocationService, private val locationMapper: LocationMapper) {
 
     @PostMapping(value = ["/location"])
-    fun saveLocation(@RequestBody locationDto: LocationDto) {
+    fun saveLocation(@RequestBody @Valid locationDto: LocationDto) {
         locationService.save(location = locationMapper.mapToLocation(locationDto))
                 .forEach(onSuccess = ::println, onFailure = { throw it })
     }
