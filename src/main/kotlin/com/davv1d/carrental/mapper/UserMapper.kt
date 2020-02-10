@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class UserMapper(private val roleMapper: RoleMapper, val passwordEncoder: PasswordEncoder) {
-    fun mapToUserDto(user: User): UserDto = with(user) { UserDto(username, email, role.name) }
+    fun mapToUserDto(user: User): UserDto = with(user) { UserDto(id, username, email, role.name) }
     fun mapToUserDtoList(users: List<User>): List<UserDto> {
         return users.asSequence()
                 .map(::mapToUserDto)

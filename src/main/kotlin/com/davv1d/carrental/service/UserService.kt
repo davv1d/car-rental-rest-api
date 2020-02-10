@@ -31,14 +31,10 @@ class UserService(
     fun getAllUsers(): List<User> = userRepository.findAll()
 
     fun save(user: User): Result<User> {
-        return with(user) {
-            userValidator.dbValidate(this)
-                    .flatMap {
-                        roleService.getRoleByName(user.role.name)
-                                .map { role -> User(username = user.username, password = user.password, email = user.email, role = role) }
-                                .flatMap { this@UserService.secureSave(it) }
-                    }
-        }
+        return userValidator.dbValidate(user)
+                .flatMap { roleService.getRoleByName(user.role.name) }
+                .map { role -> User(username = user.username, password = user.password, email = user.email, role = role) }
+                .flatMap { this.secureSave(it) }
     }
 
     fun changeEmail(username: String, email: String): Result<User> =

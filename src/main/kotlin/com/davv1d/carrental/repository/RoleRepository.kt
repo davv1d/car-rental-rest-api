@@ -8,7 +8,7 @@ import javax.transaction.Transactional
 
 @Repository
 @Transactional
-interface RoleRepository : CrudRepository<Role, Int> {
+interface RoleRepository : CrudRepository<Role, String> {
     fun findByName(name: String): Role?
     fun existsByName(name: String): Boolean
 

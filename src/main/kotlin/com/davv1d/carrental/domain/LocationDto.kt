@@ -1,3 +1,6 @@
 package com.davv1d.carrental.domain
 
-class LocationDto(val city: String = "", val street: String = "")
+class LocationDto(
+        val id: Int = 0,
+        val city: String = "",
+        val street: String = "")

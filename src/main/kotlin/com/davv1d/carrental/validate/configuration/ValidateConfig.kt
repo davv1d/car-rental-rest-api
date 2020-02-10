@@ -1,15 +1,9 @@
 package com.davv1d.carrental.validate.configuration
 
-import com.davv1d.carrental.domain.Location
-import com.davv1d.carrental.domain.Privilege
-import com.davv1d.carrental.domain.Role
-import com.davv1d.carrental.domain.User
+import com.davv1d.carrental.domain.*
 import com.davv1d.carrental.validate.ConditionValidator
 import com.davv1d.carrental.validate.Validator
-import com.davv1d.carrental.validate.condition.ConditionGenerator
-import com.davv1d.carrental.validate.condition.LocationDbConditions
-import com.davv1d.carrental.validate.condition.PrivilegeDbConditions
-import com.davv1d.carrental.validate.condition.UpdateRoleConditions
+import com.davv1d.carrental.validate.condition.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,6 +20,8 @@ class ValidateConfig {
     lateinit var privilegeDbConditions: PrivilegeDbConditions
     @Autowired
     lateinit var updateRoleConditions: UpdateRoleConditions
+    @Autowired
+    lateinit var vehicleDbConditions: VehicleDbConditions
 
     @Bean
     fun userValidator(): ConditionValidator<User> {
@@ -50,5 +46,10 @@ class ValidateConfig {
     @Bean
     fun updateRoleValidator(): ConditionValidator<Role> {
         return Validator(updateRoleConditions)
+    }
+
+    @Bean
+    fun vehicleValidator(): ConditionValidator<Vehicle> {
+        return Validator(vehicleDbConditions)
     }
 }

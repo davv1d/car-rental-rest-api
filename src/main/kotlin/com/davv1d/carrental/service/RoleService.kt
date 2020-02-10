@@ -9,6 +9,7 @@ import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.RoleRepository
 import com.davv1d.carrental.validate.ConditionValidator
 import org.springframework.stereotype.Service
+import java.lang.IllegalStateException
 
 @Service
 class RoleService(
@@ -26,20 +27,17 @@ class RoleService(
 
     fun save(role: Role): Result<Role> {
         return roleDbValidator.dbValidate(role)
-                .map { r -> getPrivilegesFromDb(r, r.privileges) }
+                .map { r -> privilegeService.getByNames(privilegeMapper.mapToNameSet(r.privileges)) }
+                .map { p -> Role(name = role.name, privileges = p) }
                 .flatMap(this::secureSave)
     }
 
-    private fun getPrivilegesFromDb(role: Role, privileges: Set<Privilege>): Role {
-        val newPrivileges = privilegeService.getByNames(privilegeMapper.mapToNameSet(privileges))
-        return Role(id = role.id, name = role.name, privileges = newPrivileges)
-    }
+    fun getRoleOrThrow(name: String): Role = roleRepository.findByName(name) ?: throw IllegalStateException("Illegal operation")
 
-
-    fun updateRole(role: Role): Result<Role> {
+    fun updateOfRolePrivileges(role: Role): Result<Role> {
         return updateRoleValidator.dbValidate(role)
-                .flatMap { r -> getRoleByName(r.name) }
-                .map { r -> getPrivilegesFromDb(r, role.privileges) }
+                .map { r -> Pair(getRoleOrThrow(r.name), privilegeService.getByNames(privilegeMapper.mapToNameSet(r.privileges))) }
+                .map { pair -> with(pair) { Role(first.id, first.name, second) } }
                 .flatMap(this::secureSave)
     }
 

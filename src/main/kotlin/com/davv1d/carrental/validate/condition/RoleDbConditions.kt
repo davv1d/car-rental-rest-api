@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class RoleDbConditions(val roleRepository: RoleRepository, private val privilegeRepository: PrivilegeRepository) : ConditionGenerator<Role> {
 
     override fun get(value: Role): List<Condition<Role>> {
-        val roleCondition = Condition(value, ROLE_EXIST_IN_DATABASE, checkFunction = { role -> roleRepository.existsByName(role.name) })
+        val roleCondition = Condition(value, ROLE_EXIST_IN_DATABASE, { role -> roleRepository.existsByName(role.name) })
         val privilegesConditions = getPrivilegesConditions(value)
         return privilegesConditions + roleCondition
     }

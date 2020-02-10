@@ -18,9 +18,18 @@ data class Vehicle(
         val model: String,
         @Column(name = "DAILY_FEE", length = 20, nullable = false)
         val dailyFee: BigDecimal,
-        @ManyToOne(targetEntity = Location::class, fetch = FetchType.EAGER)
+        @ManyToOne
         @JoinColumn(name = "LOCATION_ID", nullable = false)
         val location: Location,
-        @OneToOne(mappedBy = "vehicle", cascade = [CascadeType.ALL])
-        val vehicleParameters: VehicleParameters
+//        @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+//        @JoinColumn(name = "VEHICLE_PARAMETERS_ID")
+//        val vehicleParameters: VehicleParameters
+        @Column(name = "BODY_TYPE", length = 20, nullable = false)
+        val bodyType: String,
+        @Column(name = "PRODUCTION_YEAR", length = 4, nullable = false)
+        val productionYear: Int,
+        @Column(name = "FUEL_TYPE", length = 10, nullable = false)
+        val fuelType: String,
+        @Column(name = "POWER", length = 4, nullable = false)
+        val power: Int
 )

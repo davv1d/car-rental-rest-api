@@ -15,9 +15,5 @@ class PrivilegeService(
 ) {
     fun getAllPrivileges(): Set<Privilege> = privilegeRepository.findAll()
     fun secureSave(privilege: Privilege): Result<Privilege> = generalService.secureSave(privilege, privilegeRepository::save)
-    fun saveWithValidate(privilege: Privilege): Result<Privilege> = privilegeDbValidator.dbValidate(privilege).flatMap(this::secureSave)
-
-    fun getByNames(names: Set<String>): Set<Privilege> {
-        return privilegeRepository.getMany(names)
-    }
+    fun getByNames(names: Set<String>): Set<Privilege> = privilegeRepository.getMany(names)
 }

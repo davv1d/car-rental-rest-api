@@ -1,11 +1,13 @@
 package com.davv1d.carrental.service
 
 import com.davv1d.carrental.domain.Location
+import com.davv1d.carrental.domain.Role
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.LocationRepository
 import com.davv1d.carrental.validate.ConditionValidator
 import org.springframework.stereotype.Service
+import java.lang.IllegalStateException
 
 @Service
 class LocationService(private val validator: ConditionValidator<Location>, private val locationRepository: LocationRepository, private val generalService: GeneralService) {
@@ -15,6 +17,8 @@ class LocationService(private val validator: ConditionValidator<Location>, priva
         return validator.dbValidate(location)
                 .flatMap { this.secureSave(it) }
     }
+
+    fun getLocationOrThrow(location: Location): Location = locationRepository.findLocation(location.city, location.street) ?: throw IllegalStateException("Illegal operation")
 
     fun getAllLocations(): List<Location> = locationRepository.findAll()
     fun getAllLocationsByCity(city: String): List<Location> = locationRepository.findAllByCity(city)

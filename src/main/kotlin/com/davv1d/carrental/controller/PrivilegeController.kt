@@ -19,10 +19,10 @@ class PrivilegeController(private val privilegeMapper: PrivilegeMapper, private 
     fun getAllPrivileges(): List<PrivilegeDto> {
         return privilegeMapper.mapToPrivilegeDtoList(privilegeService.getAllPrivileges())
     }
-
-    @PostMapping(value = ["/privilege"])
-    fun save(@RequestBody @Valid privilegeDto: PrivilegeDto) {
-        privilegeService.saveWithValidate(privilegeMapper.mapToPrivilege(privilegeDto))
-                .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
-    }
+//
+//    @PostMapping(value = ["/privilege"])
+//    fun save(@RequestBody @Valid privilegeDto: PrivilegeDto) {
+//        privilegeService.saveWithValidate(privilegeMapper.mapToPrivilege(privilegeDto))
+//                .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
+//    }
 }

@@ -6,10 +6,7 @@ import com.davv1d.carrental.mapper.RoleMapper
 import com.davv1d.carrental.repository.PrivilegeRepository
 import com.davv1d.carrental.service.RoleService
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -21,8 +18,8 @@ class RoleController(private val roleService: RoleService, private val roleMappe
 //        val privilege2 = Privilege(name = "test 2")
 //        privilegeRepository.save(privilege1)
 //        privilegeRepository.save(privilege2)
-//        val userPrivileges = listOf(privilege1)
-//        val adminPrivileges = listOf(privilege1, privilege2)
+//        val userPrivileges = setOf(privilege1)
+//        val adminPrivileges = setOf(privilege1, privilege2)
 //        val roleUser = Role(name = "user", privileges = userPrivileges)
 //        val roleAdmin = Role(name = "admin", privileges = adminPrivileges)
 //        roleService.save(roleUser)
@@ -38,5 +35,11 @@ class RoleController(private val roleService: RoleService, private val roleMappe
     fun save(@RequestBody @Valid roleDto: RoleDto) {
         roleService.save(roleMapper.mapToRole(roleDto))
                 .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
+    }
+
+    @PutMapping(value = ["/role"])
+    fun updateRole(@RequestBody @Valid roleDto: RoleDto) {
+        roleService.updateOfRolePrivileges(roleMapper.mapToRole(roleDto)).
+                forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
     }
 }
