@@ -14,6 +14,9 @@ interface VehicleRepository : CrudRepository<Vehicle, Int> {
     @Query(value = "select case when count(v) > 0 then true else false end from Vehicle v where upper(v.registration) like upper(:registration)")
     fun doesRegistrationExist(registration: String): Boolean
 
+    @Query(value = "select case when count(v) > 0 then true else false end from Vehicle v where v.id = :id")
+    fun doesIdNotExist(id: Int): Boolean
+
     @Query(value = "select v from Vehicle v where upper(v.registration) like upper(:registration)")
     fun findByRegistration(registration: String): Vehicle?
 
@@ -23,6 +26,12 @@ interface VehicleRepository : CrudRepository<Vehicle, Int> {
     @Query(value = "select v from Vehicle v where upper(v.fuelType) like upper(:fuelType)")
     fun findByFuelType(fuelType: String): List<Vehicle>
 
-    @Query(nativeQuery = true, value = "select * from VEHICLES V inner join LOCATIONS L on V.LOCATION_ID = L.ID where upper(L.CITY) like upper(:city) and upper(L.STREET) like upper(:street)")
+    @Query(nativeQuery = true,
+            value = "select * from VEHICLES V inner join LOCATIONS L on V.LOCATION_ID = L.ID where upper(L.CITY) like upper(:city) and upper(L.STREET) like upper(:street)")
     fun findByLocation(city: String, street: String): List<Vehicle>
+
+    @Query(nativeQuery = true,
+            value = "select case when count(*) > 0 then true else false end from VEHICLES as v where (v.id = :id and v.registration not like :registration) and " +
+                    "(select count(*) from vehicles as v where upper(v.registration) like upper(:registration))")
+    fun doesRegistrationExistUpdateVehicle(registration: String, id: Int): Boolean
 }

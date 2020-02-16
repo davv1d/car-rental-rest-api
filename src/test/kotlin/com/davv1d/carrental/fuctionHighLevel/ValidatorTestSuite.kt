@@ -6,15 +6,11 @@ import com.davv1d.carrental.service.PrivilegeService
 import com.davv1d.carrental.service.RoleService
 import com.davv1d.carrental.service.VehicleService
 import com.davv1d.carrental.validate.ConditionValidator
-import com.davv1d.carrental.validate.condition.ConditionGenerator
-import com.davv1d.carrental.validate.condition.LocationDbConditions
 import com.davv1d.carrental.validate.condition.RoleDbConditions
-import org.hibernate.exception.ConstraintViolationException
-import org.junit.Assert.*
+import com.davv1d.carrental.validate.condition.UpdateVehicleConditions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.dao.DataIntegrityViolationException
 import java.math.BigDecimal
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,21 +25,38 @@ class ValidatorTestSuite(
         @Autowired val vehicleRepository: VehicleRepository,
         @Autowired val privilegeRepository: PrivilegeRepository,
         @Autowired val userRepository: UserRepository,
-        @Autowired val vehicleService: VehicleService) {
+        @Autowired val vehicleService: VehicleService,
+        @Autowired val updateVehicleValidator: ConditionValidator<Vehicle>) {
 
     @Test
     fun testValid() {
         val location = Location(0, "CITY", "STREET")
         val location2 = Location(0, "CITY2", "STREET2")
         locationRepository.save(location)
-        val vehicle = Vehicle(0, "WML", "AUDI", "A6", BigDecimal.ONE, Location(100, "CITY", "STREET"), "SEDAN", 1998, "DIESEL", 110)
+        val vehicle = Vehicle(0, "WML 1", "AUDI", "A6", BigDecimal.ONE, location, "SEDAN", 1998, "DIESEL", 110)
         val save = vehicleService.save(vehicle)
         println(save)
+//        val findByLocation = vehicleRepository.findByLocation("city", "Street")
+//        println(findByLocation)
+        val vehicle2 = Vehicle(0, "WML 2", "AUDI", "A6", BigDecimal.ONE, location, "SEDAN", 1998, "DIESEL", 110)
+        val save2 = vehicleService.save(vehicle2)
+        println(save2)
+        println(vehicleRepository.findAll().size)
 
-        val findByLocation = vehicleRepository.findByLocation("city", "Street")
-        println(findByLocation)
-//        val vehicle2 = Vehicle(0, "WML", "AUDI", "A6", BigDecimal.ONE, location2, "SEDAN", 1998, "DIESEL", 110)
-//        val save2 = vehicleService.save(vehicle2)
+        println(vehicleRepository.doesRegistrationExistUpdateVehicle("WML 1", 2))
+        println(vehicleRepository.doesRegistrationExistUpdateVehicle("WML 3", 2))
+        println(vehicleRepository.doesRegistrationExistUpdateVehicle("WML 2", 2))
+
+        val vehicle1 = Vehicle(2, "WML 1", "AUDI", "A6", BigDecimal.ONE, location, "SEDAN", 1998, "DIESEL", 110)
+        println(updateVehicleValidator.dbValidate(vehicle1))
+
+        with(save.getOrElse(vehicle)) {
+            val vehicleUpdate = Vehicle(165, registration, "VOLVO", "V50", BigDecimal.TEN, location, "COMBI", 2006, "GAZ", 220)
+            println(vehicleService.updateVehicle(vehicleUpdate))
+        }
+
+        println(vehicleService.getAll().size)
+
 //        val role = Role(name = "admin")
 //        roleRepository.save(role)
 //        val user = User(username = "test1", password = "test1", email = "test1", role = role)

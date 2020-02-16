@@ -12,7 +12,8 @@ class VehicleService(
         private val vehicleRepository: VehicleRepository,
         private val vehicleValidator: ConditionValidator<Vehicle>,
         private val generalService: GeneralService,
-        private val locationService: LocationService) {
+        private val locationService: LocationService,
+        private val updateVehicleValidator: ConditionValidator<Vehicle>) {
 
     fun getAll(): List<Vehicle> = vehicleRepository.findAll()
 
@@ -27,10 +28,14 @@ class VehicleService(
 
     fun getByLocation(city: String, street: String) = vehicleRepository.findByLocation(city, street)
 
-    fun save(vehicle: Vehicle): Result<Vehicle> {
-        return vehicleValidator.dbValidate(vehicle)
+    fun save(vehicle: Vehicle): Result<Vehicle> = saveWithValidation(vehicle, vehicleValidator)
+
+    fun updateVehicle(vehicle: Vehicle): Result<Vehicle> = saveWithValidation(vehicle, updateVehicleValidator)
+
+    private fun saveWithValidation(vehicle: Vehicle, validator: ConditionValidator<Vehicle>): Result<Vehicle> {
+       return validator.dbValidate(vehicle)
                 .map { locationService.getLocationOrThrow(vehicle.location) }
-                .map { location -> with(vehicle) { Vehicle(registration = registration, brand = brand, model = model, dailyFee = dailyFee, location = location, bodyType = bodyType, productionYear = productionYear, fuelType = fuelType, power = power) } }
+                .map { location -> with(vehicle) { Vehicle(id = id, registration = registration, brand = brand, model = model, dailyFee = dailyFee, location = location, bodyType = bodyType, productionYear = productionYear, fuelType = fuelType, power = power) } }
                 .flatMap { secureSave(it) }
     }
 

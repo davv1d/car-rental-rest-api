@@ -22,34 +22,27 @@ class ValidateConfig {
     lateinit var updateRoleConditions: UpdateRoleConditions
     @Autowired
     lateinit var vehicleDbConditions: VehicleDbConditions
+    @Autowired
+    lateinit var updateVehicleConditions: UpdateVehicleConditions
 
     @Bean
-    fun userValidator(): ConditionValidator<User> {
-        return Validator(userDbConditions)
-    }
+    fun userValidator(): ConditionValidator<User> = Validator(userDbConditions)
 
     @Bean
-    fun roleDbValidator(): ConditionValidator<Role> {
-        return Validator(roleDbConditions)
-    }
+    fun roleDbValidator(): ConditionValidator<Role> = Validator(roleDbConditions)
 
     @Bean
-    fun locationDbValidator(): ConditionValidator<Location> {
-        return Validator(locationDbConditions)
-    }
+    fun locationDbValidator(): ConditionValidator<Location> = Validator(locationDbConditions)
 
     @Bean
-    fun privilegeDbValidator(): ConditionValidator<Privilege> {
-        return Validator(privilegeDbConditions)
-    }
+    fun privilegeDbValidator(): ConditionValidator<Privilege> = Validator(privilegeDbConditions)
 
     @Bean
-    fun updateRoleValidator(): ConditionValidator<Role> {
-        return Validator(updateRoleConditions)
-    }
+    fun updateRoleValidator(): ConditionValidator<Role> = Validator(updateRoleConditions)
 
     @Bean
-    fun vehicleValidator(): ConditionValidator<Vehicle> {
-        return Validator(vehicleDbConditions)
-    }
+    fun vehicleValidator(): ConditionValidator<Vehicle> = Validator(vehicleDbConditions)
+
+    @Bean
+    fun updateVehicleValidator(): ConditionValidator<Vehicle> = Validator(updateVehicleConditions)
 }
