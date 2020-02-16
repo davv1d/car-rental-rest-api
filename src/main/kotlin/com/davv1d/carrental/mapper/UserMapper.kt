@@ -1,6 +1,11 @@
 package com.davv1d.carrental.mapper
 
-import com.davv1d.carrental.domain.*
+import com.davv1d.carrental.domain.Role
+import com.davv1d.carrental.domain.User
+import com.davv1d.carrental.domain.UserLogin
+import com.davv1d.carrental.domain.dto.RegistrationDto
+import com.davv1d.carrental.domain.dto.UserDto
+import com.davv1d.carrental.domain.dto.UserLoginDto
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 

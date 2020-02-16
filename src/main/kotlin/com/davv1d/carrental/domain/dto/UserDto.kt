@@ -1,4 +1,4 @@
-package com.davv1d.carrental.domain
+package com.davv1d.carrental.domain.dto
 
 class UserDto(
         val id: Int = 0,

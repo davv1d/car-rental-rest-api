@@ -21,9 +21,6 @@ data class Vehicle(
         @ManyToOne
         @JoinColumn(name = "LOCATION_ID", nullable = false)
         val location: Location,
-//        @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-//        @JoinColumn(name = "VEHICLE_PARAMETERS_ID")
-//        val vehicleParameters: VehicleParameters
         @Column(name = "BODY_TYPE", length = 20, nullable = false)
         val bodyType: String,
         @Column(name = "PRODUCTION_YEAR", length = 4, nullable = false)

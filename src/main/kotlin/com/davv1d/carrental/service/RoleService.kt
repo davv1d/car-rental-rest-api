@@ -1,7 +1,6 @@
 package com.davv1d.carrental.service
 
 import com.davv1d.carrental.constants.ROLE_WITH_THIS_NAME_IS_NOT_EXIST
-import com.davv1d.carrental.domain.Privilege
 import com.davv1d.carrental.domain.Role
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.mapper.PrivilegeMapper
@@ -9,7 +8,6 @@ import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.RoleRepository
 import com.davv1d.carrental.validate.ConditionValidator
 import org.springframework.stereotype.Service
-import java.lang.IllegalStateException
 
 @Service
 class RoleService(

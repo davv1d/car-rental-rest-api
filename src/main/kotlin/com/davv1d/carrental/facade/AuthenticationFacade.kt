@@ -1,8 +1,8 @@
 package com.davv1d.carrental.facade
 
-import com.davv1d.carrental.domain.RegistrationDto
-import com.davv1d.carrental.domain.UserDto
-import com.davv1d.carrental.domain.UserLoginDto
+import com.davv1d.carrental.domain.dto.RegistrationDto
+import com.davv1d.carrental.domain.dto.UserDto
+import com.davv1d.carrental.domain.dto.UserLoginDto
 import com.davv1d.carrental.mapper.UserMapper
 import com.davv1d.carrental.security.JwtProvider
 import com.davv1d.carrental.service.UserService

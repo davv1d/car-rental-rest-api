@@ -1,8 +1,8 @@
 package com.davv1d.carrental.controller
 
-import com.davv1d.carrental.domain.RegistrationDto
-import com.davv1d.carrental.domain.UserDto
-import com.davv1d.carrental.domain.UserLoginDto
+import com.davv1d.carrental.domain.dto.RegistrationDto
+import com.davv1d.carrental.domain.dto.UserDto
+import com.davv1d.carrental.domain.dto.UserLoginDto
 import com.davv1d.carrental.facade.AuthenticationFacade
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

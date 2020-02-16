@@ -1,6 +1,6 @@
 package com.davv1d.carrental.controller
 
-import com.davv1d.carrental.domain.RoleDto
+import com.davv1d.carrental.domain.dto.RoleDto
 import com.davv1d.carrental.fuctionHighLevel.writeAndThrowError
 import com.davv1d.carrental.mapper.RoleMapper
 import com.davv1d.carrental.repository.PrivilegeRepository

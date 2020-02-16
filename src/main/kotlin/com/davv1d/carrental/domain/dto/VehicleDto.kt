@@ -1,4 +1,4 @@
-package com.davv1d.carrental.domain
+package com.davv1d.carrental.domain.dto
 
 import java.math.BigDecimal
 import javax.validation.constraints.NotBlank

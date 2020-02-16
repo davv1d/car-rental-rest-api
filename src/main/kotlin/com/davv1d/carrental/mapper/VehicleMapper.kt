@@ -1,7 +1,7 @@
 package com.davv1d.carrental.mapper
 
 import com.davv1d.carrental.domain.Vehicle
-import com.davv1d.carrental.domain.VehicleDto
+import com.davv1d.carrental.domain.dto.VehicleDto
 import org.springframework.stereotype.Component
 
 @Component

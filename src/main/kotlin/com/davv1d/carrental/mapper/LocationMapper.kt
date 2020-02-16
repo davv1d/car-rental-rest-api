@@ -1,7 +1,7 @@
 package com.davv1d.carrental.mapper
 
 import com.davv1d.carrental.domain.Location
-import com.davv1d.carrental.domain.LocationDto
+import com.davv1d.carrental.domain.dto.LocationDto
 import org.springframework.stereotype.Component
 
 @Component

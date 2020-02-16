@@ -1,4 +1,4 @@
-package com.davv1d.carrental.domain
+package com.davv1d.carrental.domain.dto
 
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank

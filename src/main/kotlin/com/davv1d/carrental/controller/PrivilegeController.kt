@@ -1,15 +1,11 @@
 package com.davv1d.carrental.controller
 
-import com.davv1d.carrental.domain.PrivilegeDto
-import com.davv1d.carrental.fuctionHighLevel.writeAndThrowError
+import com.davv1d.carrental.domain.dto.PrivilegeDto
 import com.davv1d.carrental.mapper.PrivilegeMapper
 import com.davv1d.carrental.service.PrivilegeService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import javax.validation.Valid
 
 @RestController
 class PrivilegeController(private val privilegeMapper: PrivilegeMapper, private val privilegeService: PrivilegeService) {

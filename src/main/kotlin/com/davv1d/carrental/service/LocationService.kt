@@ -1,13 +1,11 @@
 package com.davv1d.carrental.service
 
 import com.davv1d.carrental.domain.Location
-import com.davv1d.carrental.domain.Role
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.LocationRepository
 import com.davv1d.carrental.validate.ConditionValidator
 import org.springframework.stereotype.Service
-import java.lang.IllegalStateException
 
 @Service
 class LocationService(private val validator: ConditionValidator<Location>, private val locationRepository: LocationRepository, private val generalService: GeneralService) {

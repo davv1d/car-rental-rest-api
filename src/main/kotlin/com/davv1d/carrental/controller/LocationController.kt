@@ -1,6 +1,6 @@
 package com.davv1d.carrental.controller
 
-import com.davv1d.carrental.domain.LocationDto
+import com.davv1d.carrental.domain.dto.LocationDto
 import com.davv1d.carrental.mapper.LocationMapper
 import com.davv1d.carrental.service.LocationService
 import org.springframework.web.bind.annotation.GetMapping

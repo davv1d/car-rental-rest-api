@@ -1,7 +1,7 @@
 package com.davv1d.carrental.mapper
 
 import com.davv1d.carrental.domain.Role
-import com.davv1d.carrental.domain.RoleDto
+import com.davv1d.carrental.domain.dto.RoleDto
 import org.springframework.stereotype.Component
 
 @Component

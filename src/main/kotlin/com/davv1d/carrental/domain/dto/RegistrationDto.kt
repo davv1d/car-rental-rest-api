@@ -1,4 +1,4 @@
-package com.davv1d.carrental.domain
+package com.davv1d.carrental.domain.dto
 
 import com.davv1d.carrental.constants.INCORRECT_EMAIL
 import com.davv1d.carrental.constants.PASSWORD_NOT_BLANK

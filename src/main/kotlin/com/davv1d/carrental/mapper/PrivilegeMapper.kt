@@ -1,7 +1,7 @@
 package com.davv1d.carrental.mapper
 
 import com.davv1d.carrental.domain.Privilege
-import com.davv1d.carrental.domain.PrivilegeDto
+import com.davv1d.carrental.domain.dto.PrivilegeDto
 import org.springframework.stereotype.Component
 
 @Component
