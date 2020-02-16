@@ -15,15 +15,17 @@ class ValidateConfig {
     @Autowired
     lateinit var roleDbConditions: ConditionGenerator<Role>
     @Autowired
-    lateinit var locationDbConditions: LocationDbConditions
+    lateinit var locationDbConditions: ConditionGenerator<Location>
     @Autowired
-    lateinit var privilegeDbConditions: PrivilegeDbConditions
+    lateinit var privilegeDbConditions: ConditionGenerator<Privilege>
     @Autowired
-    lateinit var updateRoleConditions: UpdateRoleConditions
+    lateinit var updateRoleConditions: ConditionGenerator<Role>
     @Autowired
-    lateinit var vehicleDbConditions: VehicleDbConditions
+    lateinit var vehicleDbConditions: ConditionGenerator<Vehicle>
     @Autowired
-    lateinit var updateVehicleConditions: UpdateVehicleConditions
+    lateinit var updateVehicleConditions: ConditionGenerator<Vehicle>
+    @Autowired
+    lateinit var removeLocationConditions: ConditionGenerator<Int>
 
     @Bean
     fun userValidator(): ConditionValidator<User> = Validator(userDbConditions)
@@ -33,6 +35,9 @@ class ValidateConfig {
 
     @Bean
     fun locationDbValidator(): ConditionValidator<Location> = Validator(locationDbConditions)
+
+    @Bean
+    fun removeLocationValidator(): ConditionValidator<Int> = Validator(removeLocationConditions)
 
     @Bean
     fun privilegeDbValidator(): ConditionValidator<Privilege> = Validator(privilegeDbConditions)

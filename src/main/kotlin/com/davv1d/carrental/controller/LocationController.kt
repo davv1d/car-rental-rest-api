@@ -2,11 +2,11 @@ package com.davv1d.carrental.controller
 
 import com.davv1d.carrental.domain.dto.LocationDto
 import com.davv1d.carrental.mapper.LocationMapper
+import com.davv1d.carrental.repository.LocationRepository
 import com.davv1d.carrental.service.LocationService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import com.davv1d.carrental.validate.condition.RemoveLocationConditions
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -23,4 +23,9 @@ class LocationController(private val locationService: LocationService, private v
         return locationMapper.mapToLocationDtoList(locationService.getAllLocations())
     }
 
+    @DeleteMapping(value = ["/location"], params = ["id"])
+    fun deleteById(@RequestParam id: Int) {
+        locationService.deleteLocationById(id)
+                .forEach(onSuccess = { println("delete location with id = $id")}, onFailure = { throw it })
+    }
 }

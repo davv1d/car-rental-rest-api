@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @ControllerAdvice
-class ErrorHand {
+class ErrorsHandlingControllerAdvice {
     @ExceptionHandler(MissingKotlinParameterException::class)
     @ResponseStatus(BAD_REQUEST)
     @ResponseBody

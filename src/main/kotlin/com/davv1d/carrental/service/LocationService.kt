@@ -8,11 +8,15 @@ import com.davv1d.carrental.validate.ConditionValidator
 import org.springframework.stereotype.Service
 
 @Service
-class LocationService(private val validator: ConditionValidator<Location>, private val locationRepository: LocationRepository, private val generalService: GeneralService) {
+class LocationService(
+        private val locationDbValidator: ConditionValidator<Location>,
+        private val removeLocationValidator: ConditionValidator<Int>,
+        private val locationRepository: LocationRepository,
+        private val generalService: GeneralService) {
 
     fun secureSave(location: Location): Result<Location> = generalService.secureSave(location, locationRepository::save)
     fun save(location: Location): Result<Location> {
-        return validator.dbValidate(location)
+        return locationDbValidator.dbValidate(location)
                 .flatMap { this.secureSave(it) }
     }
 
@@ -27,5 +31,10 @@ class LocationService(private val validator: ConditionValidator<Location>, priva
                 else -> Result.invoke(result)
             }
         }
+    }
+
+    fun deleteLocationById(id: Int): Result<Unit> {
+        return removeLocationValidator.dbValidate(id)
+                .map { locationRepository.deleteById(it) }
     }
 }

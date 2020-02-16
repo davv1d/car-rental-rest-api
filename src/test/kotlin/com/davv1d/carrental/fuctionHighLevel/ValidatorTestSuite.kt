@@ -2,6 +2,7 @@ package com.davv1d.carrental.fuctionHighLevel
 
 import com.davv1d.carrental.domain.*
 import com.davv1d.carrental.repository.*
+import com.davv1d.carrental.service.LocationService
 import com.davv1d.carrental.service.PrivilegeService
 import com.davv1d.carrental.service.RoleService
 import com.davv1d.carrental.service.VehicleService
@@ -16,6 +17,7 @@ import java.math.BigDecimal
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ValidatorTestSuite(
         @Autowired val locationRepository: LocationRepository,
+        @Autowired val locationService: LocationService,
         @Autowired val roleDbValidator: ConditionValidator<Role>,
         @Autowired val roleDbConditions: RoleDbConditions,
 //        @Autowired val privilegeRepository: PrivilegeRepository,
@@ -32,7 +34,8 @@ class ValidatorTestSuite(
     fun testValid() {
         val location = Location(0, "CITY", "STREET")
         val location2 = Location(0, "CITY2", "STREET2")
-        locationRepository.save(location)
+        val savedLocation1 = locationRepository.save(location)
+        val savedLocation2 = locationRepository.save(location2)
         val vehicle = Vehicle(0, "WML 1", "AUDI", "A6", BigDecimal.ONE, location, "SEDAN", 1998, "DIESEL", 110)
         val save = vehicleService.save(vehicle)
         println(save)
@@ -57,6 +60,10 @@ class ValidatorTestSuite(
 
         println(vehicleService.getAll().size)
 
+        val isVehicles = locationRepository.areThereVehiclesInLocation(105)
+        println("is vehicles $isVehicles")
+//        locationRepository.deleteById(105)
+        println(locationService.deleteLocationById(savedLocation2.id))
 //        val role = Role(name = "admin")
 //        roleRepository.save(role)
 //        val user = User(username = "test1", password = "test1", email = "test1", role = role)
