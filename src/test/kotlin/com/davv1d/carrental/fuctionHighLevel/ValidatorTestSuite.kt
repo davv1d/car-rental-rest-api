@@ -18,7 +18,6 @@ class ValidatorTestSuite(
         @Autowired val locationService: LocationService,
         @Autowired val roleDbValidator: ConditionValidator<Role>,
         @Autowired val roleDbConditions: RoleDbConditions,
-//        @Autowired val privilegeRepository: PrivilegeRepository,
         @Autowired val roleRepository: RoleRepository,
         @Autowired val privilegeService: PrivilegeService,
         @Autowired val roleService: RoleService,
@@ -102,27 +101,27 @@ class ValidatorTestSuite(
 //        println(findAllByCity.size)
 
 
-        val privilege1 = Privilege(name = "test 1")
-        val privilege2 = Privilege(name = "test 2")
-        val privilege3 = Privilege(name = "test 3")
-        val privilege4 = Privilege(name = "test 4")
-
-        privilegeRepository.save(privilege1)
-        privilegeRepository.save(privilege2)
-        privilegeRepository.save(privilege3)
-        val adminPrivileges = setOf(privilege1, privilege2)
-        val userPrivileges = setOf(privilege3)
-        val role = Role(name = "admin", privileges = adminPrivileges)
-        val role1 = Role(name = "user", privileges = userPrivileges)
-        val savedRoleAdmin = roleRepository.save(role)
-        val savedRoleUser = roleRepository.save(role1)
-        val user = User(username = "name", password = "password", email = "email@test.pl", role = savedRoleAdmin)
-        userRepository.save(user)
-        println(savedRoleAdmin)
-        println()
-        println(roleService.deleteById(15))
-        println(roleService.deleteById(savedRoleAdmin.id))
-        println(roleService.deleteById(savedRoleUser.id))
+//        val privilege1 = Privilege(name = "test 1")
+//        val privilege2 = Privilege(name = "test 2")
+//        val privilege3 = Privilege(name = "test 3")
+//        val privilege4 = Privilege(name = "test 4")
+//
+//        privilegeRepository.save(privilege1)
+//        privilegeRepository.save(privilege2)
+//        privilegeRepository.save(privilege3)
+//        val adminPrivileges = setOf(privilege1, privilege2)
+//        val userPrivileges = setOf(privilege3)
+//        val role = Role(name = "admin", privileges = adminPrivileges)
+//        val role1 = Role(name = "user", privileges = userPrivileges)
+//        val savedRoleAdmin = roleRepository.save(role)
+//        val savedRoleUser = roleRepository.save(role1)
+//        val user = User(username = "name", password = "password", email = "email@test.pl", role = savedRoleAdmin)
+//        userRepository.save(user)
+//        println(savedRoleAdmin)
+//        println()
+//        println(roleService.deleteById(15))
+//        println(roleService.deleteById(savedRoleAdmin.id))
+//        println(roleService.deleteById(savedRoleUser.id))
 
 ////        val privilegesConditions = roleDbConditions.get(role2)
 ////        val dbValidate = validator.dbValidate(role2)
