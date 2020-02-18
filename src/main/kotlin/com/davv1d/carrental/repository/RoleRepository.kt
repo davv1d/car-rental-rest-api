@@ -8,7 +8,7 @@ import javax.transaction.Transactional
 
 @Repository
 @Transactional
-interface RoleRepository : CrudRepository<Role, String> {
+interface RoleRepository : CrudRepository<Role, Int> {
     fun findByName(name: String): Role?
     fun existsByName(name: String): Boolean
 
@@ -16,4 +16,9 @@ interface RoleRepository : CrudRepository<Role, String> {
     fun doesRoleNotExistByName(name: String): Boolean
 
     override fun findAll(): List<Role>
+
+    @Query(nativeQuery = true,
+            value = "select case when count(*) > 0 then 'true' else 'false' end from USERS as U where U.ROLE_ID like :id")
+    fun areThereUsersWithThisRole(id: Int): Boolean
+
 }

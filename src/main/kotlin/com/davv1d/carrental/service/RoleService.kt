@@ -16,7 +16,8 @@ class RoleService(
         private val generalService: GeneralService,
         private val privilegeService: PrivilegeService,
         private val privilegeMapper: PrivilegeMapper,
-        private val updateRoleValidator: ConditionValidator<Role>) {
+        private val updateRoleValidator: ConditionValidator<Role>,
+        private val removeRoleValidator: ConditionValidator<Int>) {
 
     fun getRoleByName(name: String): Result<Role> = generalService.getByValue(
             value = name,
@@ -42,4 +43,9 @@ class RoleService(
     fun getAllRole(): List<Role> = roleRepository.findAll()
 
     fun secureSave(role: Role): Result<Role> = generalService.secureSave(role, roleRepository::save)
+
+    fun deleteById(id: Int) : Result<Unit> {
+        return removeRoleValidator.dbValidate(id)
+                .map { roleRepository.deleteById(it) }
+    }
 }

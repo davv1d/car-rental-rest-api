@@ -26,6 +26,8 @@ class ValidateConfig {
     lateinit var updateVehicleConditions: ConditionGenerator<Vehicle>
     @Autowired
     lateinit var removeLocationConditions: ConditionGenerator<Int>
+    @Autowired
+    lateinit var removeRoleConditions: ConditionGenerator<Int>
 
     @Bean
     fun userValidator(): ConditionValidator<User> = Validator(userDbConditions)
@@ -50,4 +52,7 @@ class ValidateConfig {
 
     @Bean
     fun updateVehicleValidator(): ConditionValidator<Vehicle> = Validator(updateVehicleConditions)
+
+    @Bean
+    fun removeRoleValidator(): ConditionValidator<Int> = Validator(removeRoleConditions)
 }
