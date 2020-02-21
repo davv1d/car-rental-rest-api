@@ -3,6 +3,7 @@ package com.davv1d.carrental.mapper
 import com.davv1d.carrental.domain.Role
 import com.davv1d.carrental.domain.User
 import com.davv1d.carrental.domain.UserLogin
+import com.davv1d.carrental.domain.dto.CustomerRegistrationDto
 import com.davv1d.carrental.domain.dto.RegistrationDto
 import com.davv1d.carrental.domain.dto.UserDto
 import com.davv1d.carrental.domain.dto.UserLoginDto
@@ -23,4 +24,8 @@ class UserMapper(private val roleMapper: RoleMapper, val passwordEncoder: Passwo
     }
 
     fun mapToLogin(userLoginDto: UserLoginDto): UserLogin = with(userLoginDto) { UserLogin(username, password) }
+
+    fun mapToUser(customerRegistrationDto: CustomerRegistrationDto): User = with(customerRegistrationDto) {
+        User(username = username, password = passwordEncoder.encode(password), email = email, role = Role(name = "customer"))
+    }
 }

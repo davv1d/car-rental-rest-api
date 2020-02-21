@@ -1,5 +1,6 @@
 package com.davv1d.carrental.facade
 
+import com.davv1d.carrental.domain.dto.CustomerRegistrationDto
 import com.davv1d.carrental.domain.dto.RegistrationDto
 import com.davv1d.carrental.domain.dto.UserDto
 import com.davv1d.carrental.domain.dto.UserLoginDto
@@ -18,8 +19,7 @@ class AuthenticationFacade(
         private val userService: UserService,
         private val userMapper: UserMapper,
         private val authenticationManager: AuthenticationManager,
-        private val jwtProvider: JwtProvider)
-{
+        private val jwtProvider: JwtProvider) {
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationFacade::class.java)
 
     fun userRegistration(registrationDto: RegistrationDto): UserDto {
@@ -37,6 +37,11 @@ class AuthenticationFacade(
         )
         SecurityContextHolder.getContext().authentication = authenticate
         return jwtProvider.generateJwtToken(authenticate)
+    }
+
+    fun customerRegistration(customerRegistrationDto: CustomerRegistrationDto): UserDto {
+        return userService.save(userMapper.mapToUser(customerRegistrationDto))
+                .effect(onSuccess = userMapper::mapToUserDto, onFailure = { exception -> logger.error(exception.message) }, onEmpty = { UserDto() })
     }
 
 }
