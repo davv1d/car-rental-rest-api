@@ -46,4 +46,14 @@ interface VehicleRepository : CrudRepository<Vehicle, Int> {
                     "(select vehicle_id, max(date) as max from vehicle_location where date <= :dateOfRent group by vehicle_id) b " +
                     "on a.vehicle_id = b.vehicle_id and a.date = b.max and a.location_id = :locationId) c on v.id = c.vehicle_id)")
     fun findAvailableVehicles(dateOfRent: LocalDateTime, dateOfReturn: LocalDateTime, locationId: Int): List<Vehicle>
+
+    @Query(nativeQuery = true,
+            value = "select case when count(*) = 0 then true else false end " +
+                    "from vehicles as v " +
+                    "left join rentals on v.id = rentals.vehicle_id where (rentals.date_of_rent is null or (:dateOfRent < rentals.date_of_rent and :dateOfReturn < rentals.date_of_rent) or (:dateOfRent > rentals.date_of_return and :dateOfReturn > rentals.date_of_return)) " +
+                    "and v.id in " +
+                    "(select v.id from vehicles as v join (select a.id, a.date, a.location_id, a.vehicle_id from vehicle_location as a join " +
+                    "(select vehicle_id, max(date) as max from vehicle_location where date <= :dateOfRent group by vehicle_id) b " +
+                    "on a.vehicle_id = b.vehicle_id and a.date = b.max and a.location_id = :locationId) c on v.id = c.vehicle_id where v.id = :vehicleId)")
+    fun doesVehicleNotExistInAvailableVehicles(dateOfRent: LocalDateTime, dateOfReturn: LocalDateTime, locationId: Int, vehicleId: Int): Boolean
 }

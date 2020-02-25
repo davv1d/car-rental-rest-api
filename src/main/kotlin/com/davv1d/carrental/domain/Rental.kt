@@ -19,5 +19,11 @@ data class Rental(
         val vehicle: Vehicle,
         @ManyToOne(targetEntity = User::class)
         @JoinColumn(name = "USER_ID")
-        val user: User
+        val user: User,
+        @ManyToOne(targetEntity = Location::class)
+        @JoinColumn(name = "START_LOCATION_ID")
+        val startLocation: Location,
+        @ManyToOne(targetEntity = Location::class)
+        @JoinColumn(name = "END_LOCATION_ID")
+        val endLocation: Location
 )

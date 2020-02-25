@@ -3,10 +3,7 @@ package com.davv1d.carrental.fuctionHighLevel
 import com.davv1d.carrental.domain.*
 import com.davv1d.carrental.mapper.VehicleLocationMapper
 import com.davv1d.carrental.repository.*
-import com.davv1d.carrental.service.LocationService
-import com.davv1d.carrental.service.PrivilegeService
-import com.davv1d.carrental.service.RoleService
-import com.davv1d.carrental.service.VehicleService
+import com.davv1d.carrental.service.*
 import com.davv1d.carrental.validate.ConditionValidator
 import com.davv1d.carrental.validate.condition.RoleDbConditions
 import org.junit.jupiter.api.Test
@@ -31,7 +28,8 @@ class ValidatorTestSuite(
         @Autowired val updateVehicleValidator: ConditionValidator<Vehicle>,
         @Autowired val vehicleLocationRepository: VehicleLocationRepository,
         @Autowired val rentalRepository: RentalRepository,
-        @Autowired val vehicleLocationMapper: VehicleLocationMapper) {
+        @Autowired val vehicleLocationMapper: VehicleLocationMapper,
+        @Autowired val rentalService: RentalService) {
 
     @Test
     fun testValid() {
@@ -70,8 +68,12 @@ class ValidatorTestSuite(
         vehicleLocationRepository.save(vehicleLocation)
         vehicleLocationRepository.save(vehicleLocation5)
 
-        val rental = Rental(0, LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(15), savedVehicle, savedUser)
-        val savedRental = rentalRepository.save(rental)
+        val vehicleWrongId = Vehicle(155, "WML 1", "AUDI", "A6", BigDecimal.ONE, "SEDAN", 1998, "DIESEL", 110)
+        val locationWrongId = Location(155, "CITY", "STREET")
+        val userWrongName = User(username = "name155", password = "password", email = "email@test.pl", role = savedRoleAdmin)
+        val rental = Rental(0, LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(15), vehicleWrongId, userWrongName, locationWrongId, locationWrongId)
+        println(rentalService.save(rental))
+//        val savedRental = rentalRepository.save(rental)
 
         vehicleRepository.findVehiclesByLocation(LocalDateTime.now().plusDays(5), 28)
                 .forEach{t -> println(t) }
@@ -85,6 +87,7 @@ class ValidatorTestSuite(
         vehicleLocationMapper.mapToVehicleLocationDtoList(vehicleLocationRepository.findVehicleLocationsToSpecificDateByVehicleId(LocalDateTime.now().plusDays(5), vehicle2.id))
                 .forEach(::println)
 
+        println(vehicleRepository.doesVehicleNotExistInAvailableVehicles(LocalDateTime.now().plusDays(7), LocalDateTime.now().plusDays(11), savedLocation1.id, savedVehicle.id))
 
 //        println()
 //        println(vehicleRepository.findVehiclesInLocation(LocalDateTime.now().plusDays(7), savedLocation1.id))

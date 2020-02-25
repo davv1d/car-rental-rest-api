@@ -31,6 +31,11 @@ class ValidateConfig {
     @Autowired
     lateinit var vehicleLocationConditions: ConditionGenerator<VehicleLocation>
 
+    @Autowired
+    lateinit var rentalSaveDateConditions: ConditionGenerator<Rental>
+    @Autowired
+    lateinit var rentalDbConditions: ConditionGenerator<Rental>
+
     @Bean
     fun userValidator(): ConditionValidator<User> = Validator(userDbConditions)
 
@@ -60,4 +65,10 @@ class ValidateConfig {
 
     @Bean
     fun vehicleLocationValidator(): ConditionValidator<VehicleLocation> = Validator(vehicleLocationConditions)
+
+    @Bean
+    fun rentalSaveValidator(): ConditionValidator<Rental> = Validator(rentalDbConditions)
+
+    @Bean
+    fun rentalSaveDateValidator(): ConditionValidator<Rental> = Validator(rentalSaveDateConditions)
 }

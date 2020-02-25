@@ -7,9 +7,10 @@ import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.VehicleRepository
 import com.davv1d.carrental.validate.ConditionValidator
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
-@Component
+@Service
 class VehicleService(
         private val vehicleRepository: VehicleRepository,
         private val vehicleValidator: ConditionValidator<Vehicle>,
