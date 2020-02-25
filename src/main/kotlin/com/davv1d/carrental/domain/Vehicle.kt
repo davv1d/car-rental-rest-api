@@ -11,22 +11,19 @@ data class Vehicle(
         @Column(name = "ID", nullable = false)
         val id: Int = 0,
         @Column(name = "REGISTRATION", length = 10, nullable = false)
-        val registration: String,
+        val registration: String = "",
         @Column(name = "BRAND", length = 20, nullable = false)
-        val brand: String,
+        val brand: String = "",
         @Column(name = "MODEL", length = 20, nullable = false)
-        val model: String,
+        val model: String = "",
         @Column(name = "DAILY_FEE", length = 20, nullable = false)
-        val dailyFee: BigDecimal,
-        @ManyToOne
-        @JoinColumn(name = "LOCATION_ID", nullable = false)
-        val location: Location,
+        val dailyFee: BigDecimal = BigDecimal.ZERO,
         @Column(name = "BODY_TYPE", length = 20, nullable = false)
-        val bodyType: String,
+        val bodyType: String = "",
         @Column(name = "PRODUCTION_YEAR", length = 4, nullable = false)
-        val productionYear: Int,
+        val productionYear: Int = 0,
         @Column(name = "FUEL_TYPE", length = 10, nullable = false)
-        val fuelType: String,
+        val fuelType: String = "",
         @Column(name = "POWER", length = 4, nullable = false)
-        val power: Int
+        val power: Int = 0
 )

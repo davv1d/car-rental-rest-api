@@ -1,19 +1,23 @@
 package com.davv1d.carrental
 
 import com.davv1d.carrental.constants.*
-import com.davv1d.carrental.domain.Privilege
-import com.davv1d.carrental.domain.Role
-import com.davv1d.carrental.domain.User
-import com.davv1d.carrental.service.PrivilegeService
-import com.davv1d.carrental.service.RoleService
-import com.davv1d.carrental.service.UserService
+import com.davv1d.carrental.domain.*
+import com.davv1d.carrental.repository.LocationRepository
+import com.davv1d.carrental.repository.VehicleLocationRepository
+import com.davv1d.carrental.repository.VehicleRepository
+import com.davv1d.carrental.service.*
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
+import java.time.LocalDateTime
 import javax.annotation.PostConstruct
 
 @Component
-class StartData(private val privilegeService: PrivilegeService, private val roleService: RoleService, private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
+class StartData(private val privilegeService: PrivilegeService, private val roleService: RoleService, private val userService: UserService, private val passwordEncoder: PasswordEncoder
+                ,private val vehicleRepository: VehicleRepository,
+                private val vehicleLocationRepository: VehicleLocationRepository,
+                private val locationRepository: LocationRepository) {
     private val logger = LoggerFactory.getLogger(StartData::class.java)
 
     @PostConstruct
@@ -76,27 +80,47 @@ class StartData(private val privilegeService: PrivilegeService, private val role
         privilegeService.saveAll(allPrivileges)
 
         val resultRoleAdmin = roleService.getRoleByName("admin")
-        resultRoleAdmin.forEach(onSuccess = {logger.info("Role admin is exist")}, onFailure = { logger.info("Role admin not exist")})
+        resultRoleAdmin.forEach(onSuccess = { logger.info("Role admin is exist") }, onFailure = { logger.info("Role admin not exist") })
         val adminRole = when (resultRoleAdmin.isFailure()) {
             true -> roleService.save(Role(name = "admin", privileges = allPrivileges))
             else -> resultRoleAdmin
         }
 
         val resultRoleCustomer = roleService.getRoleByName("customer")
-        resultRoleCustomer.forEach(onSuccess = {logger.info("Role customer is exist")}, onFailure = { logger.info("Role customer not exist")})
+        resultRoleCustomer.forEach(onSuccess = { logger.info("Role customer is exist") }, onFailure = { logger.info("Role customer not exist") })
         if (resultRoleCustomer.isFailure()) roleService.save(Role(name = "customer", privileges = customerPrivileges))
 
         val resultUserByName = userService.getUserByName("admin")
-        resultUserByName.forEach(onSuccess = {logger.info("User admin is exist")}, onFailure = { logger.info("User admin not exist")})
+        resultUserByName.forEach(onSuccess = { logger.info("User admin is exist") }, onFailure = { logger.info("User admin not exist") })
         val userAdmin = when (resultUserByName.isFailure()) {
             true -> {
                 adminRole
-                        .map { role ->  User(username = "admin", password = passwordEncoder.encode("admin"), email = "admin@admin.pl", role = role) }
-                        .flatMap { user ->  userService.save(user) }
+                        .map { role -> User(username = "admin", password = passwordEncoder.encode("admin"), email = "admin@admin.pl", role = role) }
+                        .flatMap { user -> userService.save(user) }
             }
             else -> resultUserByName
         }
-        userAdmin.forEach(onSuccess = {logger.info("User admin is exist")}, onFailure = { logger.info("User admin not exist")})
-    }
+        userAdmin.forEach(onSuccess = { logger.info("User admin is exist") }, onFailure = { logger.info("User admin not exist") })
 
+        println(LocalDateTime.now())
+
+//        val location1 = Location(0, "city1", "street1")
+//        val location2 = Location(0, "city2", "street2")
+//        val savedLocation1 = locationRepository.save(location1)
+//        val savedLocation2 = locationRepository.save(location2)
+//
+//        val vehicle1 = Vehicle(0, "WML 1", "AUDI", "A6", BigDecimal.ZERO, "SEDAN", 1998, "DIESEL")
+//        val vehicle2 = Vehicle(0, "WML 2", "AUDI", "A4", BigDecimal.TEN, "COMBI", 2000, "DIESEL")
+//        val vehicle3 = Vehicle(0, "WML 3", "CITROEN", "C5", BigDecimal.ZERO, "SEDAN", 2010, "GAS")
+//        val savedVehicle1 = vehicleRepository.save(vehicle1)
+//        val savedVehicle2 = vehicleRepository.save(vehicle2)
+//        val savedVehicle3 = vehicleRepository.save(vehicle3)
+//
+//        val vehicleLocation1 = VehicleLocation(0, LocalDateTime.now(), savedLocation1, savedVehicle1)
+//        val vehicleLocation2 = VehicleLocation(0, LocalDateTime.now().plusDays(2), savedLocation1, savedVehicle2)
+//        val vehicleLocation3 = VehicleLocation(0, LocalDateTime.now().plusDays(4), savedLocation2, savedVehicle3)
+//        vehicleLocationRepository.save(vehicleLocation1)
+//        vehicleLocationRepository.save(vehicleLocation2)
+//        vehicleLocationRepository.save(vehicleLocation3)
+    }
 }

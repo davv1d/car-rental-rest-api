@@ -1,10 +1,7 @@
 package com.davv1d.carrental.security
 
-import com.davv1d.carrental.constants.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpMethod.*
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -70,7 +67,7 @@ class SecurityConfig(
 //                .regexMatchers(HttpMethod.GET, "\\/vehicle\\?registration=.*").hasAuthority(GET_VEHICLE_BY_REGISTRATION)
 //                .regexMatchers(GET, "\\/vehicle\\?brand=.*").hasAuthority(GET_VEHICLES_BY_BRAND)
 //                .regexMatchers(GET, "\\/vehicle\\?fuelType=.*").hasAuthority(GET_VEHICLES_BY_FUEL_TYPE)
-//                .regexMatchers(GET, "\\/vehicle\\?city=.*&street=.*").hasAuthority(GET_VEHICLES_BY_LOCATION)
+//                .regexMatchers(GET, "\\/vehicle\\?data1=.*&locationId=.*").hasAuthority(GET_VEHICLES_BY_LOCATION)
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)

@@ -24,6 +24,11 @@ class RoleService(
             error = NotFoundElementException(ROLE_WITH_THIS_NAME_IS_NOT_EXIST),
             function = roleRepository::findByName)
 
+    fun getRoleById(id: Int): Result<Role> = generalService.getByValue(
+            value = id,
+            error = NotFoundElementException("ROLE_WITH_THIS_ID_IS_NOT_EXIST"),
+            function = roleRepository::findById)
+
     fun save(role: Role): Result<Role> {
         return roleDbValidator.dbValidate(role)
                 .map { r -> privilegeService.getByNames(privilegeMapper.mapToNameSet(r.privileges)) }
@@ -31,12 +36,14 @@ class RoleService(
                 .flatMap(this::secureSave)
     }
 
-    fun getRoleOrThrow(name: String): Role = roleRepository.findByName(name) ?: throw IllegalStateException("Illegal operation")
-
     fun updateOfRolePrivileges(role: Role): Result<Role> {
         return updateRoleValidator.dbValidate(role)
-                .map { r -> Pair(getRoleOrThrow(r.name), privilegeService.getByNames(privilegeMapper.mapToNameSet(r.privileges))) }
-                .map { pair -> with(pair) { Role(first.id, first.name, second) } }
+                .flatMap { r ->
+                    getRoleById(r.id).map { roleDownloaded ->
+                        val privilegeDownloaded = privilegeService.getByNames(privilegeMapper.mapToNameSet(r.privileges))
+                        Role(roleDownloaded.id, roleDownloaded.name, privilegeDownloaded)
+                    }
+                }
                 .flatMap(this::secureSave)
     }
 
@@ -44,7 +51,7 @@ class RoleService(
 
     fun secureSave(role: Role): Result<Role> = generalService.secureSave(role, roleRepository::save)
 
-    fun deleteById(id: Int) : Result<Unit> {
+    fun deleteById(id: Int): Result<Unit> {
         return removeRoleValidator.dbValidate(id)
                 .map { roleRepository.deleteById(it) }
     }

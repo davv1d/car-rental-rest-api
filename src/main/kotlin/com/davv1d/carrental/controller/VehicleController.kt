@@ -6,10 +6,8 @@ import com.davv1d.carrental.mapper.VehicleMapper
 import com.davv1d.carrental.service.VehicleService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 import javax.validation.Valid
 
 @RestController
@@ -32,11 +30,18 @@ class VehicleController(private val vehicleService: VehicleService, private val 
     @GetMapping(value = ["/vehicle"], params = ["brand"])
     fun getByBrand(brand: String): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getByBrand(brand))
 
-
     @GetMapping(value = ["/vehicle"], params = ["fuelType"])
     fun getByFuelType(fuelType: String): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getByFuelType(fuelType))
 
+    @GetMapping(value = ["/vehicle"], params = ["date", "locationId"])
+    fun getByLocation(date: String, locationId: Int): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getByLocation(LocalDateTime.parse(date), locationId))
 
-    @GetMapping(value = ["/vehicle"], params = ["city", "street"])
-    fun getByLocation(city: String, street: String): List<VehicleDto> = vehicleMapper.mapToVehicleDtoList(vehicleService.getByLocation(city, street))
+    @GetMapping(value = ["/vehicle"], params = ["dateOfRent", "dateOfReturn", "locationId"])
+    fun getAvailable(dateOfRent: String, dateOfReturn: String, locationId: Int): List<VehicleDto> =
+            vehicleMapper.mapToVehicleDtoList(vehicleService.getAvailable(LocalDateTime.parse(dateOfRent), LocalDateTime.parse(dateOfReturn), locationId))
+
+    @PutMapping(value = ["/vehicle"])
+    fun update(@RequestBody @Valid vehicleDto: VehicleDto): VehicleDto =
+         vehicleService.update(vehicleMapper.mapToVehicle(vehicleDto))
+                .effect(onSuccess = vehicleMapper::mapToVehicleDto, onFailure = { writeAndThrowError(logger, it) }, onEmpty = { VehicleDto() })
 }

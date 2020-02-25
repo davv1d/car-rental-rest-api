@@ -4,16 +4,21 @@ import com.davv1d.carrental.domain.Role
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 import javax.transaction.Transactional
 
 @Repository
 @Transactional
 interface RoleRepository : CrudRepository<Role, Int> {
-    fun findByName(name: String): Role?
+    override fun findById(id: Int): Optional<Role>
+    fun findByName(name: String): Optional<Role>
     fun existsByName(name: String): Boolean
 
     @Query(value = "select case when count(r) = 0 then true else false end from Role r where upper(r.name) like upper(:name)")
     fun doesRoleNotExistByName(name: String): Boolean
+
+    @Query(value = "select case when count(r) = 0 then true else false end from Role r where upper(r.id) = :id")
+    fun doesRoleNotExistById(id: Int): Boolean
 
     override fun findAll(): List<Role>
 

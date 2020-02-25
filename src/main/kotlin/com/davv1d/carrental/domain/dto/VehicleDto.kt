@@ -13,8 +13,6 @@ class VehicleDto(
         @get:NotBlank(message = "VEHICLE MODEL MUST NOT BE BLANK")
         val model: String = "",
         val dailyFee: BigDecimal = BigDecimal.ZERO,
-        @get:NotNull(message = "VEHICLE LOCATION MUST NOT BE NULL")
-        val locationDto: LocationDto = LocationDto(),
         @get:NotBlank(message = "VEHICLE BODY TYPE MUST NOT BE BLANK")
         val bodyType: String = "",
         val productionYear: Int = 0,

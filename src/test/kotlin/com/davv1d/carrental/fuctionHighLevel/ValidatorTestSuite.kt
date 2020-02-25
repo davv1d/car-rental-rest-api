@@ -1,6 +1,7 @@
 package com.davv1d.carrental.fuctionHighLevel
 
 import com.davv1d.carrental.domain.*
+import com.davv1d.carrental.mapper.VehicleLocationMapper
 import com.davv1d.carrental.repository.*
 import com.davv1d.carrental.service.LocationService
 import com.davv1d.carrental.service.PrivilegeService
@@ -11,6 +12,8 @@ import com.davv1d.carrental.validate.condition.RoleDbConditions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ValidatorTestSuite(
@@ -25,14 +28,69 @@ class ValidatorTestSuite(
         @Autowired val privilegeRepository: PrivilegeRepository,
         @Autowired val userRepository: UserRepository,
         @Autowired val vehicleService: VehicleService,
-        @Autowired val updateVehicleValidator: ConditionValidator<Vehicle>) {
+        @Autowired val updateVehicleValidator: ConditionValidator<Vehicle>,
+        @Autowired val vehicleLocationRepository: VehicleLocationRepository,
+        @Autowired val rentalRepository: RentalRepository,
+        @Autowired val vehicleLocationMapper: VehicleLocationMapper) {
 
     @Test
     fun testValid() {
 
-//        val location = Location(0, "CITY", "STREET")
+        val privilege1 = Privilege(name = "test 1")
+        privilegeRepository.save(privilege1)
+        val adminPrivileges = setOf(privilege1)
+        val role = Role(name = "admin1", privileges = adminPrivileges)
+        val savedRoleAdmin = roleRepository.save(role)
+        val user = User(username = "name", password = "password", email = "email@test.pl", role = savedRoleAdmin)
+        val savedUser = userRepository.save(user)
+
+        val location = Location(0, "CITY", "STREET")
+        val savedLocation1 = locationRepository.save(location)
+
+
+        val location2 = Location(0, "CITY2", "STREET2")
+        val savedLocation2 = locationRepository.save(location2)
+
+        val vehicle1 = Vehicle(0, "WML 1", "AUDI", "A6", BigDecimal.ONE, "SEDAN", 1998, "DIESEL", 110)
+        val savedVehicle = vehicleRepository.save(vehicle1)
+
+        val vehicle2 = Vehicle(0, "WML 2", "CITROEN", "C5", BigDecimal.ONE, "COMBI", 2006, "DIESEL", 220)
+        val savedVehicle2 = vehicleRepository.save(vehicle2)
+
+        val vehicleLocation = VehicleLocation(0, LocalDateTime.now(), savedLocation1, savedVehicle)
+        val vehicleLocation2 = VehicleLocation(0, LocalDateTime.now().plusDays(6), savedLocation1, savedVehicle)
+        val vehicleLocation3 = VehicleLocation(0, LocalDateTime.now().plusDays(4), savedLocation1, savedVehicle)
+
+        val vehicleLocation4 = VehicleLocation(0, LocalDateTime.now().plusDays(4), savedLocation1, savedVehicle2)
+        val vehicleLocation5 = VehicleLocation(0, LocalDateTime.now().plusDays(6), savedLocation2, savedVehicle2)
+
+        vehicleLocationRepository.save(vehicleLocation3)
+        vehicleLocationRepository.save(vehicleLocation2)
+        vehicleLocationRepository.save(vehicleLocation4)
+        vehicleLocationRepository.save(vehicleLocation)
+        vehicleLocationRepository.save(vehicleLocation5)
+
+        val rental = Rental(0, LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(15), savedVehicle, savedUser)
+        val savedRental = rentalRepository.save(rental)
+
+        vehicleRepository.findVehiclesByLocation(LocalDateTime.now().plusDays(5), 28)
+                .forEach{t -> println(t) }
+
+
+        println(rentalRepository.findAll().size)
+        vehicleRepository.findAvailableVehicles(LocalDateTime.now().plusDays(10), LocalDateTime.now().plusDays(11).plusHours(23), 28)
+                .forEach(::println)
+
+        println()
+        vehicleLocationMapper.mapToVehicleLocationDtoList(vehicleLocationRepository.findVehicleLocationsToSpecificDateByVehicleId(LocalDateTime.now().plusDays(5), vehicle2.id))
+                .forEach(::println)
+
+
+//        println()
+//        println(vehicleRepository.findVehiclesInLocation(LocalDateTime.now().plusDays(7), savedLocation1.id))
+
+
 //        val location2 = Location(0, "CITY2", "STREET2")
-//        val savedLocation1 = locationRepository.save(location)
 //        val savedLocation2 = locationRepository.save(location2)
 //        val vehicle = Vehicle(0, "WML 1", "AUDI", "A6", BigDecimal.ONE, location, "SEDAN", 1998, "DIESEL", 110)
 //        val save = vehicleService.save(vehicle)

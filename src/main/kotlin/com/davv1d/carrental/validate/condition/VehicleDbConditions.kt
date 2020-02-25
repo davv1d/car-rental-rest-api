@@ -7,10 +7,9 @@ import com.davv1d.carrental.repository.VehicleRepository
 import org.springframework.stereotype.Component
 
 @Component
-class VehicleDbConditions(private val vehicleRepository: VehicleRepository, private val locationRepository: LocationRepository) : ConditionGenerator<Vehicle> {
+class VehicleDbConditions(private val vehicleRepository: VehicleRepository) : ConditionGenerator<Vehicle> {
     override fun get(value: Vehicle): List<Condition<Vehicle>> {
         val condition1 = Condition(value, "REGISTRATION NUMBER IS EXIST", { vehicle -> vehicleRepository.doesRegistrationExist(vehicle.registration) })
-        val condition2 = Condition(value, "LOCATION DOES NOT EXIST", { vehicle -> with(vehicle.location) { locationRepository.doesLocationNotExist(city, street) } })
-        return listOf(condition1, condition2)
+        return listOf(condition1)
     }
 }

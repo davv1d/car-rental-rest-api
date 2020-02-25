@@ -20,10 +20,15 @@ class LocationService(
                 .flatMap { this.secureSave(it) }
     }
 
-    fun getLocationOrThrow(location: Location): Location = locationRepository.findLocation(location.city, location.street) ?: throw IllegalStateException("Illegal operation")
+    fun getById(id: Int): Result<Location> = generalService.getByValue(
+            value = id,
+            error = NotFoundElementException("LOCATION WITH THIS ID NOT EXIST"),
+            function = locationRepository::findById)
 
     fun getAllLocations(): List<Location> = locationRepository.findAll()
+
     fun getAllLocationsByCity(city: String): List<Location> = locationRepository.findAllByCity(city)
+
     fun getLocation(location: Location): Result<Location> {
         with(location) {
             return when (val result = locationRepository.findLocation(city, street)) {
