@@ -10,7 +10,10 @@ import java.time.LocalDateTime
 import javax.validation.Valid
 
 @RestController
-class VehicleLocationController(private val vehicleLocationService: VehicleLocationService, private val vehicleLocationMapper: VehicleLocationMapper) {
+class VehicleLocationController(
+        private val vehicleLocationService: VehicleLocationService,
+        private val vehicleLocationMapper: VehicleLocationMapper
+) {
     private val logger = LoggerFactory.getLogger(VehicleLocationController::class.java)
 
 //    2020-02-27T20:40
@@ -18,7 +21,7 @@ class VehicleLocationController(private val vehicleLocationService: VehicleLocat
     fun getVehicleLocationsToSpecificDateByVehicleId(date: String, vehicleId: Int): List<VehicleLocationDto> =
             vehicleLocationMapper.mapToVehicleLocationDtoList(vehicleLocationService.getLocationsToSpecificDateByVehicleId(LocalDateTime.parse(date), vehicleId))
 
-    @PostMapping(value = ["vehicle-location"])
+    @PostMapping(value = ["/vehicle-location"])
     fun save(@RequestBody @Valid vehicleLocationDto: VehicleLocationDto) =
             vehicleLocationService.saveWithValidation(vehicleLocationMapper.mapToVehicleLocation(vehicleLocationDto))
                     .forEach(onSuccess = { logger.info(it.toString()) }, onFailure = { writeAndThrowError(logger, it) })

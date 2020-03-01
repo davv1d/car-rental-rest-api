@@ -48,7 +48,7 @@ interface VehicleRepository : CrudRepository<Vehicle, Int> {
     fun findAvailableVehicles(dateOfRent: LocalDateTime, dateOfReturn: LocalDateTime, locationId: Int): List<Vehicle>
 
     @Query(nativeQuery = true,
-            value = "select case when count(*) = 0 then true else false end " +
+            value = "select case when count(*) = 0 then 'true' else 'false' end " +
                     "from vehicles as v " +
                     "left join rentals on v.id = rentals.vehicle_id where (rentals.date_of_rent is null or (:dateOfRent < rentals.date_of_rent and :dateOfReturn < rentals.date_of_rent) or (:dateOfRent > rentals.date_of_return and :dateOfReturn > rentals.date_of_return)) " +
                     "and v.id in " +

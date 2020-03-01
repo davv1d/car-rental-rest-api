@@ -1,10 +1,10 @@
 package com.davv1d.carrental.service
 
 import com.davv1d.carrental.domain.VehicleLocation
+import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.VehicleLocationRepository
 import com.davv1d.carrental.validate.ConditionValidator
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -31,4 +31,21 @@ class VehicleLocationService(
     fun getLocationsToSpecificDateByVehicleId(date1: LocalDateTime, vehicleId: Int): List<VehicleLocation> = vehicleLocationRepository.findVehicleLocationsToSpecificDateByVehicleId(date1, vehicleId)
 
     fun vehicleLocationSecureSave(vehicleLocation: VehicleLocation): Result<VehicleLocation> = generalService.secureSave(vehicleLocation, vehicleLocationRepository::save)
+
+    fun getByDateAndVehicleId(date: LocalDateTime, vehicleId: Int): Result<VehicleLocation> {
+        val optionalVehicleLocation = vehicleLocationRepository.findByDateAndVehicle_Id(date, vehicleId)
+        return if (optionalVehicleLocation.isPresent) {
+            Result.invoke(optionalVehicleLocation.get())
+        } else {
+            Result.failure(NotFoundElementException("NOT FOUND VEHICLE LOCATION"))
+        }
+    }
+
+    fun delete(vehicleLocationId: Int): Result<VehicleLocation> = generalService.simpleDelete(
+            value = vehicleLocationId,
+            findFunction = vehicleLocationRepository::findById,
+            error = NotFoundElementException("NOT FOUND VEHICLE LOCATION"),
+            deleteFunction = vehicleLocationRepository::deleteById
+    )
+
 }

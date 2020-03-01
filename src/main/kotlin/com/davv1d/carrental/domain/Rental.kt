@@ -25,5 +25,8 @@ data class Rental(
         val startLocation: Location,
         @ManyToOne(targetEntity = Location::class)
         @JoinColumn(name = "END_LOCATION_ID")
-        val endLocation: Location
+        val endLocation: Location,
+
+        @Column(name = "DATE_OF_ORDER", nullable = false)
+        val dateOfOrder: LocalDateTime = LocalDateTime.now()
 )
