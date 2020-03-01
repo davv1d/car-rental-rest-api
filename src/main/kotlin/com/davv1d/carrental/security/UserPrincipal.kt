@@ -13,7 +13,7 @@ class UserPrincipal(private val user: User) : UserDetails {
                 .toList()
     }
 
-    override fun isEnabled(): Boolean = true
+    override fun isEnabled(): Boolean = user.active
     override fun getUsername(): String = user.username
     override fun isCredentialsNonExpired(): Boolean = true
     override fun getPassword(): String = user.password

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.annotation.PostConstruct
+import com.davv1d.carrental.constants.AdminAccountConfig.email
+import com.davv1d.carrental.constants.AdminAccountConfig.name
+import com.davv1d.carrental.constants.AdminAccountConfig.password
 
 @Component
 class StartData(private val privilegeService: PrivilegeService, private val roleService: RoleService, private val userService: UserService, private val passwordEncoder: PasswordEncoder
@@ -95,7 +98,7 @@ class StartData(private val privilegeService: PrivilegeService, private val role
         val userAdmin = when (resultUserByName.isFailure()) {
             true -> {
                 adminRole
-                        .map { role -> User(username = "admin", password = passwordEncoder.encode("admin"), email = "admin@admin.pl", role = role) }
+                        .map { role -> User(username = name, password = passwordEncoder.encode(password), email = email, role = role, active = true) }
                         .flatMap { user -> userService.save(user) }
             }
             else -> resultUserByName

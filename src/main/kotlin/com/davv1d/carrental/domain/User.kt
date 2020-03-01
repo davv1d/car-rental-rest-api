@@ -17,5 +17,7 @@ data class User(
         val email: String,
         @ManyToOne(targetEntity = Role::class, fetch = FetchType.EAGER)
         @JoinColumn(name = "ROLE_ID", nullable = false)
-        val role: Role
+        val role: Role,
+        @Column(name = "ACTIVE", nullable = false)
+        val active: Boolean = true
 )

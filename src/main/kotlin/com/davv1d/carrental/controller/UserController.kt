@@ -1,7 +1,10 @@
 package com.davv1d.carrental.controller
 
+import com.davv1d.carrental.domain.User
 import com.davv1d.carrental.domain.dto.UserDto
+import com.davv1d.carrental.fuctionHighLevel.writeAndThrowError
 import com.davv1d.carrental.mapper.UserMapper
+import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -46,4 +49,19 @@ class UserController(private val userService: UserService, private val userMappe
         return userService.changeEmail(username = principal.name, email = email)
                 .effect(onSuccess = userMapper::mapToUserDto, onFailure = { exception -> logger.error(exception.message) }, onEmpty = { UserDto() })
     }
+
+    @PutMapping(value = ["/user-disable"])
+    fun disableAccountByOwner(principal: Principal) =
+            userService.disableAccount(principal.name)
+                    .forEach(onSuccess = { logger.info(it.toString()) }, onFailure = { logger.error(it.message) })
+
+    @PutMapping(value = ["/user-disable"], params = ["username"])
+    fun disableAccountByAdmin(username: String) =
+            userService.disableAccount(username)
+                    .forEach(onSuccess = { logger.info(it.toString()) }, onFailure = { logger.error(it.message) })
+
+    @PutMapping(value = ["/user-enable"], params = ["username"])
+    fun enableAccount(username: String) =
+            userService.enableAccount(username)
+                    .forEach(onSuccess = { logger.info(it.toString()) }, onFailure = { logger.error(it.message) })
 }
