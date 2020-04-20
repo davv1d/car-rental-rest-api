@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @Component
 class PrivilegeDbConditions(private val privilegeRepository: PrivilegeRepository) : ConditionGenerator<Privilege> {
     override fun get(value: Privilege): List<Condition<Privilege>> {
-        val con1 = Condition(value, "Privilege " + value.name + " is exist", { p -> privilegeRepository.existsByName(p.name) })
+        val con1 = Condition(value, "Privilege ${value.name} is exist", { p -> privilegeRepository.existsByName(p.name) })
         return listOf(con1)
     }
 }

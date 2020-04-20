@@ -18,7 +18,7 @@ class RoleDbConditions(val roleRepository: RoleRepository, private val privilege
 
     fun getPrivilegesConditions(role: Role): List<Condition<Role>> {
         return role.privileges.asSequence()
-                .map { privilege -> Condition(role, "Privilege " + privilege.name + " is not exist", { privilegeRepository.doesNotExistByName(privilege.name) }) }
+                .map { privilege -> Condition(role, """Privilege ${privilege.name} is not exist""", { privilegeRepository.doesNotExistByName(privilege.name) }) }
                 .toList()
     }
 }
