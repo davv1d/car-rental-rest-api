@@ -4,6 +4,7 @@ import com.davv1d.carrental.constants.AdminAccountConfig
 import com.davv1d.carrental.constants.EMAIL_EXIST_IN_DATABASE
 import com.davv1d.carrental.constants.USER_WITH_THIS_EMAIL_IS_NOT_EXIST
 import com.davv1d.carrental.constants.USER_WITH_THIS_NAME_IS_NOT_EXIST
+import com.davv1d.carrental.domain.Role
 import com.davv1d.carrental.domain.User
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
@@ -33,11 +34,14 @@ class UserService(
 
     fun save(user: User): Result<User> {
         return userValidator.dbValidate(user)
-                .flatMap { roleService.getRoleByName(user.role.name) }
-                .map { role -> User(username = user.username, password = user.password, email = user.email, role = role, active = user.active) }
+                .flatMap { convert(it, roleService::getRoleByName) }
                 .flatMap { this.secureSave(it) }
     }
 
+    fun convert(u: User, getRole: (String) -> Result<Role>): Result<User> {
+        return getRole.invoke(u.role.name)
+                .map { role -> User(username = u.username, password = u.password, email = u.email, role = role, active = u.active) }
+    }
     fun changeEmail(username: String, email: String): Result<User> =
             getUserByName(username)
                     .filter(EMAIL_EXIST_IN_DATABASE) { user -> !userRepository.existsByEmail(user.email) }
