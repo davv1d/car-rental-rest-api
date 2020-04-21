@@ -1,5 +1,7 @@
 package com.davv1d.carrental.service
 
+import com.davv1d.carrental.domain.Location
+import com.davv1d.carrental.domain.Vehicle
 import com.davv1d.carrental.domain.VehicleLocation
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
@@ -19,13 +21,17 @@ class VehicleLocationService(
 
     fun saveWithValidation(vehicleLocation: VehicleLocation): Result<VehicleLocation> {
         return vehicleLocationValidator.dbValidate(vehicleLocation)
-                .flatMap { vL ->
-                    vehicleService.getById(vL.vehicle.id)
-                            .flatMap { v ->
-                                locationService.getById(vL.location.id)
-                                        .map { l -> VehicleLocation(date = vL.date, location = l, vehicle = v) }
-                            }
-                }.flatMap { vehicleLocationSecureSave(it) }
+                .flatMap { convert(it, vehicleService::getById, locationService::getById) }
+                .flatMap { vehicleLocationSecureSave(it) }
+    }
+
+    fun convert(vehicleLocation: VehicleLocation, fetchVehicle: (Int) -> Result<Vehicle>, fetchLocation: (Int) -> Result<Location>): Result<VehicleLocation> {
+        return with(vehicleLocation) {
+            vehicleService.getById(vehicle.id)
+                    .flatMap { vehicle -> fetchLocation(location.id)
+                                .map { location -> VehicleLocation(date = date, location = location, vehicle = vehicle) }
+                    }
+        }
     }
 
     fun getLocationsToSpecificDateByVehicleId(date1: LocalDateTime, vehicleId: Int): List<VehicleLocation> = vehicleLocationRepository.findVehicleLocationsToSpecificDateByVehicleId(date1, vehicleId)
@@ -47,5 +53,4 @@ class VehicleLocationService(
             error = NotFoundElementException("NOT FOUND VEHICLE LOCATION"),
             deleteFunction = vehicleLocationRepository::deleteById
     )
-
 }
