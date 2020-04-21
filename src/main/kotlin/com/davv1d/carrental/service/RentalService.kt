@@ -1,6 +1,9 @@
 package com.davv1d.carrental.service
 
+import com.davv1d.carrental.domain.Location
 import com.davv1d.carrental.domain.Rental
+import com.davv1d.carrental.domain.User
+import com.davv1d.carrental.domain.Vehicle
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.RentalRepository
@@ -21,18 +24,25 @@ class RentalService(
     fun secureSave(rental: Rental): Result<Rental> = generalService.secureSave(value = rental, function = rentalRepository::save)
 
     fun save(rental: Rental): Result<Rental> {
+        return saveValidate(rental)
+                .flatMap { r -> convert(r, vehicleService::getById, userService::getUserByName, locationService::getById) }
+                .flatMap(::secureSave)
+    }
+
+    fun saveValidate(rental: Rental): Result<Rental> {
         return rentalSaveDateValidator.dbValidate(rental)
                 .flatMap { rentalSaveValidator.dbValidate(it) }
-                .flatMap { r -> vehicleService.getById(r.vehicle.id)
-                            .flatMap { vehicle -> userService.getUserByName(r.user.username)
-                                        .flatMap { user -> locationService.getById(r.startLocation.id)
-                                                    .flatMap { startLocation -> locationService.getById(r.endLocation.id)
-                                                                .map { endLocation -> with(r) { Rental(id, dateOfRent, dateOfReturn, vehicle, user, startLocation, endLocation) } }
-                                                    }
+    }
+
+    fun convert(rental: Rental, fetchVehicle: (Int) -> Result<Vehicle>, fetchUser: (String) -> Result<User>, fetchLocation: (Int) -> Result<Location>): Result<Rental> {
+        return fetchVehicle.invoke(rental.vehicle.id)
+                .flatMap { vehicle -> fetchUser.invoke(rental.user.username)
+                            .flatMap { user -> fetchLocation.invoke(rental.startLocation.id)
+                                        .flatMap { startLocation -> fetchLocation.invoke(rental.endLocation.id)
+                                                    .map { endLocation -> with(rental) { Rental(id, dateOfRent, dateOfReturn, vehicle, user, startLocation, endLocation) } }
                                         }
                             }
                 }
-                .flatMap(::secureSave)
     }
 
     fun getAll(): List<Rental> = rentalRepository.findAll()
