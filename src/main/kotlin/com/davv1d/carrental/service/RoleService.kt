@@ -1,6 +1,7 @@
 package com.davv1d.carrental.service
 
 import com.davv1d.carrental.constants.ROLE_WITH_THIS_NAME_IS_NOT_EXIST
+import com.davv1d.carrental.domain.Privilege
 import com.davv1d.carrental.domain.Role
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.mapper.PrivilegeMapper
@@ -31,9 +32,13 @@ class RoleService(
 
     fun save(role: Role): Result<Role> {
         return roleDbValidator.dbValidate(role)
-                .map { r -> privilegeService.getByNames(privilegeMapper.mapToNameSet(r.privileges)) }
-                .map { p -> Role(name = role.name, privileges = p) }
+                .map { r -> convert(r, privilegeService::getByNames, privilegeMapper::mapToNameSet) }
                 .flatMap(this::secureSave)
+    }
+
+    fun convert(role: Role, fetchPrivileges: (Set<String>) -> Set<Privilege>, mapPrivilegeNameToSetString: (Set<Privilege>) -> Set<String>): Role {
+        val privileges = fetchPrivileges.invoke(mapPrivilegeNameToSetString.invoke(role.privileges))
+        return Role(name = role.name, privileges = privileges)
     }
 
     fun updateOfRolePrivileges(role: Role): Result<Role> {
