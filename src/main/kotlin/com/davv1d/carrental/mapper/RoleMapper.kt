@@ -12,9 +12,15 @@ class RoleMapper(val privilegeMapper: PrivilegeMapper) {
                     .map { role: Role -> this.mapToRoleDto(role) }
                     .toList()
 
-    fun mapToRole(roleDto: RoleDto): Role {
+    fun mapToRoleToSave(roleDto: RoleDto): Role {
         return with(roleDto) {
             Role(name = roleName, privileges = privilegeMapper.mapToPrivilegeSet(privileges))
+        }
+    }
+
+    fun mapToRoleToUpdate(roleDto: RoleDto): Role {
+        return with(roleDto) {
+            Role(id = id, name = roleName, privileges = privilegeMapper.mapToPrivilegeSet(privileges))
         }
     }
 }
