@@ -26,4 +26,10 @@ interface RoleRepository : CrudRepository<Role, Int> {
             value = "select case when count(*) > 0 then 'true' else 'false' end from USERS as U where U.ROLE_ID like :id")
     fun areThereUsersWithThisRole(id: Int): Boolean
 
+    @Query(nativeQuery = true,
+            value = "select case when count(*) > 0 then true else false end from ROLES as r where " +
+                    "((r.id = :id and r.name not like :name) or (select case when count(*) = 0 then 1 else 0 end from ROLES as r where r.id = :id )) and " +
+                    "(select count(*) from ROLES as r where upper(r.name) like upper(:name))")
+    fun updateCheckDoesRoleNameExist(name: String, id: Int): Boolean
+
 }
