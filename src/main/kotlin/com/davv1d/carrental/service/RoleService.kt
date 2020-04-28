@@ -36,11 +36,11 @@ class RoleService(
 
     fun saveOrUpdate(role: Role, validator: ConditionValidator<Role>): Result<Role> {
         return roleDbValidator.dbValidate(role)
-                .map { r -> convert(r, privilegeService::getByNames, privilegeMapper::mapToNameSet) }
+                .map { r -> addPrivilegesToTheRole(r, privilegeService::getByNames, privilegeMapper::mapToNameSet) }
                 .flatMap(this::secureSave)
     }
 
-    fun convert(role: Role, fetchPrivileges: (Set<String>) -> Set<Privilege>, mapPrivilegeNameToSetString: (Set<Privilege>) -> Set<String>): Role {
+    fun addPrivilegesToTheRole(role: Role, fetchPrivileges: (Set<String>) -> Set<Privilege>, mapPrivilegeNameToSetString: (Set<Privilege>) -> Set<String>): Role {
         val privileges = fetchPrivileges.invoke(mapPrivilegeNameToSetString.invoke(role.privileges))
         return Role(id = role.id, name = role.name, privileges = privileges)
     }

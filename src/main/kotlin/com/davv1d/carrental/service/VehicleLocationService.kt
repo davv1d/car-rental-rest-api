@@ -21,11 +21,11 @@ class VehicleLocationService(
 
     fun saveWithValidation(vehicleLocation: VehicleLocation): Result<VehicleLocation> {
         return vehicleLocationValidator.dbValidate(vehicleLocation)
-                .flatMap { convert(it, vehicleService::getById, locationService::getById) }
+                .flatMap { addVehicleAndLocationToTheVehicleLocation(it, vehicleService::getById, locationService::getById) }
                 .flatMap { vehicleLocationSecureSave(it) }
     }
 
-    fun convert(vehicleLocation: VehicleLocation, fetchVehicle: (Int) -> Result<Vehicle>, fetchLocation: (Int) -> Result<Location>): Result<VehicleLocation> {
+    fun addVehicleAndLocationToTheVehicleLocation(vehicleLocation: VehicleLocation, fetchVehicle: (Int) -> Result<Vehicle>, fetchLocation: (Int) -> Result<Location>): Result<VehicleLocation> {
         return with(vehicleLocation) {
             vehicleService.getById(vehicle.id)
                     .flatMap { vehicle -> fetchLocation(location.id)

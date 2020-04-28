@@ -34,11 +34,11 @@ class UserService(
 
     fun save(user: User): Result<User> {
         return userValidator.dbValidate(user)
-                .flatMap { convert(it, roleService::getRoleByName) }
+                .flatMap { addRoleToTheUser(it, roleService::getRoleByName) }
                 .flatMap { this.secureSave(it) }
     }
 
-    fun convert(u: User, getRole: (String) -> Result<Role>): Result<User> {
+    fun addRoleToTheUser(u: User, getRole: (String) -> Result<Role>): Result<User> {
         return getRole.invoke(u.role.name)
                 .map { role -> User(username = u.username, password = u.password, email = u.email, role = role, active = u.active) }
     }

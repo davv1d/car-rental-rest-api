@@ -25,7 +25,7 @@ class RentalService(
 
     fun save(rental: Rental): Result<Rental> {
         return saveValidate(rental)
-                .flatMap { r -> convert(r, vehicleService::getById, userService::getUserByName, locationService::getById) }
+                .flatMap { r -> addUserVehicleAndLocationsToTheRental(r, vehicleService::getById, userService::getUserByName, locationService::getById) }
                 .flatMap(::secureSave)
     }
 
@@ -34,7 +34,7 @@ class RentalService(
                 .flatMap { rentalSaveValidator.dbValidate(it) }
     }
 
-    fun convert(rental: Rental, fetchVehicle: (Int) -> Result<Vehicle>, fetchUser: (String) -> Result<User>, fetchLocation: (Int) -> Result<Location>): Result<Rental> {
+    fun addUserVehicleAndLocationsToTheRental(rental: Rental, fetchVehicle: (Int) -> Result<Vehicle>, fetchUser: (String) -> Result<User>, fetchLocation: (Int) -> Result<Location>): Result<Rental> {
         return fetchVehicle.invoke(rental.vehicle.id)
                 .flatMap { vehicle -> fetchUser.invoke(rental.user.username)
                             .flatMap { user -> fetchLocation.invoke(rental.startLocation.id)
