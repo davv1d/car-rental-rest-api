@@ -30,7 +30,11 @@ class RoleService(
             error = NotFoundElementException("ROLE_WITH_THIS_ID_IS_NOT_EXIST"),
             function = roleRepository::findById)
 
-    fun save(role: Role): Result<Role> {
+    fun save(role: Role): Result<Role> = saveOrUpdate(role, roleDbValidator)
+
+    fun updateRole(role: Role): Result<Role> = saveOrUpdate(role, updateRoleValidator)
+
+    fun saveOrUpdate(role: Role, validator: ConditionValidator<Role>): Result<Role> {
         return roleDbValidator.dbValidate(role)
                 .map { r -> convert(r, privilegeService::getByNames, privilegeMapper::mapToNameSet) }
                 .flatMap(this::secureSave)
@@ -38,18 +42,7 @@ class RoleService(
 
     fun convert(role: Role, fetchPrivileges: (Set<String>) -> Set<Privilege>, mapPrivilegeNameToSetString: (Set<Privilege>) -> Set<String>): Role {
         val privileges = fetchPrivileges.invoke(mapPrivilegeNameToSetString.invoke(role.privileges))
-        return Role(name = role.name, privileges = privileges)
-    }
-
-    fun updateOfRolePrivileges(role: Role): Result<Role> {
-        return updateRoleValidator.dbValidate(role)
-                .flatMap { r ->
-                    getRoleById(r.id).map { roleDownloaded ->
-                        val privilegeDownloaded = privilegeService.getByNames(privilegeMapper.mapToNameSet(r.privileges))
-                        Role(roleDownloaded.id, roleDownloaded.name, privilegeDownloaded)
-                    }
-                }
-                .flatMap(this::secureSave)
+        return Role(id = role.id, name = role.name, privileges = privileges)
     }
 
     fun getAllRole(): List<Role> = roleRepository.findAll()

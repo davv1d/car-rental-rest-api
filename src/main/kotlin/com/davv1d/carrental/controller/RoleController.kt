@@ -25,7 +25,7 @@ class RoleController(private val roleService: RoleService, private val roleMappe
 
     @PutMapping(value = ["/role"])
     fun updateRole(@RequestBody @Valid roleDto: RoleDto) {
-        roleService.updateOfRolePrivileges(roleMapper.mapToRoleToUpdate(roleDto)).forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
+        roleService.updateRole(roleMapper.mapToRoleToUpdate(roleDto)).forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
     }
 
     @DeleteMapping(value = ["/role"], params = ["id"])
