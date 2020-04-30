@@ -33,7 +33,7 @@ class UserService(
     fun getAllUsers(): List<User> = userRepository.findAll()
 
     fun save(user: User): Result<User> {
-        return userValidator.dbValidate(user)
+        return userValidator.valid(user, ::RuntimeException)
                 .flatMap { addRoleToTheUser(it, roleService::getRoleByName) }
                 .flatMap { this.secureSave(it) }
     }

@@ -42,7 +42,7 @@ class VehicleService(
     fun getAvailable(dateOfRent: LocalDateTime, dateOfReturn: LocalDateTime, locationId: Int): List<Vehicle> = vehicleRepository.findAvailableVehicles(dateOfRent, dateOfReturn, locationId)
 
     private fun saveWithValidation(vehicle: Vehicle, validator: ConditionValidator<Vehicle>): Result<Vehicle> {
-        return validator.dbValidate(vehicle)
+        return validator.valid(vehicle, ::RuntimeException)
                 .flatMap { secureSave(it) }
     }
 

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class VehicleLocationConditions(private val vehicleRepository: VehicleRepository, private val locationRepository: LocationRepository) : ConditionGenerator<VehicleLocation> {
-    override fun get(value: VehicleLocation): List<Condition<VehicleLocation>> {
-        val condition1 = Condition(value, "LOCATION NOT EXIST", { locationRepository.doesLocationNotExistById(value.location.id) })
-        val condition2 = Condition(value, "VEHICLE NOT EXIST", { vehicleRepository.doesIdNotExist(value.vehicle.id) })
+    override fun get(): List<Condition<VehicleLocation>> {
+        val condition1 = Condition<VehicleLocation>("LOCATION NOT EXIST") { vehicleLocation -> locationRepository.doesLocationNotExistById(vehicleLocation.location.id) }
+        val condition2 = Condition<VehicleLocation>("VEHICLE NOT EXIST") { vehicleLocation -> vehicleRepository.doesIdNotExist(vehicleLocation.vehicle.id) }
         return listOf(condition1, condition2)
     }
 }

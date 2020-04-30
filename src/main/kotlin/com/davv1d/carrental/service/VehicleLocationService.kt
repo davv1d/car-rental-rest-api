@@ -20,7 +20,7 @@ class VehicleLocationService(
 ) {
 
     fun saveWithValidation(vehicleLocation: VehicleLocation): Result<VehicleLocation> {
-        return vehicleLocationValidator.dbValidate(vehicleLocation)
+        return vehicleLocationValidator.valid(vehicleLocation, ::RuntimeException)
                 .flatMap { addVehicleAndLocationToTheVehicleLocation(it, vehicleService::getById, locationService::getById) }
                 .flatMap { vehicleLocationSecureSave(it) }
     }

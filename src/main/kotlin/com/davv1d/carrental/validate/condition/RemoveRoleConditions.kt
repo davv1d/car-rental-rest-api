@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class RemoveRoleConditions(private val roleRepository: RoleRepository) : ConditionGenerator<Int> {
-    override fun get(value: Int): List<Condition<Int>> {
-        val condition1 = Condition(value, "ROLE WITH THIS ID NOT EXIST", { !roleRepository.findById(it).isPresent })
-        val condition2 = Condition(value, "USERS HAVE THIS ROLE", { roleRepository.areThereUsersWithThisRole(it) })
-        val condition3 = Condition(value, "ROLE ADMIN CAN NOT BE REMOVE", { isRoleNameAdmin(it) })
+    override fun get(): List<Condition<Int>> {
+        val condition1 = Condition<Int>("ROLE WITH THIS ID NOT EXIST") { !roleRepository.findById(it).isPresent }
+        val condition2 = Condition<Int>("USERS HAVE THIS ROLE") { roleRepository.areThereUsersWithThisRole(it) }
+        val condition3 = Condition<Int>("ROLE ADMIN CAN NOT BE REMOVE") { isRoleNameAdmin(it) }
         return listOf(condition1, condition2, condition3)
     }
 

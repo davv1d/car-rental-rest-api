@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class RentalDbConditions(private val vehicleRepository: VehicleRepository, private val locationRepository: LocationRepository, private val userRepository: UserRepository) : ConditionGenerator<Rental> {
-    override fun get(value: Rental): List<Condition<Rental>> {
-        val condition1 = Condition(value, "VEHICLE NOT AVAILABLE", { rental -> with(rental) { vehicleRepository.doesVehicleNotExistInAvailableVehicles(dateOfRent, dateOfReturn, startLocation.id, vehicle.id) } })
-        val condition2 = Condition(value, "START LOCATION NOT EXIST", { rental -> locationRepository.doesLocationNotExistById(rental.startLocation.id) })
-        val condition3 = Condition(value, "END LOCATION NOT EXIST", { rental -> locationRepository.doesLocationNotExistById(rental.endLocation.id) })
-        val condition4 = Condition(value, "USER NOT EXIST", { rental -> userRepository.doesNotExistByUsername(rental.user.username) })
+    override fun get(): List<Condition<Rental>> {
+        val condition1 = Condition<Rental>( "VEHICLE NOT AVAILABLE") { rental -> with(rental) { vehicleRepository.doesVehicleNotExistInAvailableVehicles(dateOfRent, dateOfReturn, startLocation.id, vehicle.id) } }
+        val condition2 = Condition<Rental>( "START LOCATION NOT EXIST") { rental -> locationRepository.doesLocationNotExistById(rental.startLocation.id) }
+        val condition3 = Condition<Rental>( "END LOCATION NOT EXIST") { rental -> locationRepository.doesLocationNotExistById(rental.endLocation.id) }
+        val condition4 = Condition<Rental>( "USER NOT EXIST") { rental -> userRepository.doesNotExistByUsername(rental.user.username) }
         return listOf(condition1, condition2, condition3, condition4)
     }
 }

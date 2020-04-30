@@ -30,8 +30,8 @@ class RentalService(
     }
 
     fun saveValidate(rental: Rental): Result<Rental> {
-        return rentalSaveDateValidator.dbValidate(rental)
-                .flatMap { rentalSaveValidator.dbValidate(it) }
+        return rentalSaveDateValidator.valid(rental, ::RuntimeException)
+                .flatMap { rentalSaveValidator.valid(it, ::RuntimeException) }
     }
 
     fun addUserVehicleAndLocationsToTheRental(rental: Rental, fetchVehicle: (Int) -> Result<Vehicle>, fetchUser: (String) -> Result<User>, fetchLocation: (Int) -> Result<Location>): Result<Rental> {

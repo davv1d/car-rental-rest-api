@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class RemoveLocationConditions(private val locationRepository: LocationRepository) : ConditionGenerator<Int> {
-    override fun get(value: Int): List<Condition<Int>> {
-        val condition1 = Condition(value, "LOCATION WITH THIS ID NOT EXIST", { locationRepository.doesLocationNotExistById(it) })
-        val condition2 = Condition(value, "IN THIS LOCATION THERE ARE CARS", { locationRepository.areThereVehiclesInLocation(it) })
+    override fun get(): List<Condition<Int>> {
+        val condition1 = Condition<Int>( "LOCATION WITH THIS ID NOT EXIST") { locationRepository.doesLocationNotExistById(it) }
+        val condition2 = Condition<Int>( "IN THIS LOCATION THERE ARE CARS") { locationRepository.areThereVehiclesInLocation(it) }
         return listOf(condition1, condition2)
     }
 }

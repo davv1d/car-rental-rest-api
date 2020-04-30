@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class VehicleDbConditions(private val vehicleRepository: VehicleRepository) : ConditionGenerator<Vehicle> {
-    override fun get(value: Vehicle): List<Condition<Vehicle>> {
-        val condition1 = Condition(value, "REGISTRATION NUMBER IS EXIST", { vehicle -> vehicleRepository.doesRegistrationExist(vehicle.registration) })
+    override fun get(): List<Condition<Vehicle>> {
+        val condition1 = Condition<Vehicle>("REGISTRATION NUMBER IS EXIST") { vehicle -> vehicleRepository.doesRegistrationExist(vehicle.registration) }
         return listOf(condition1)
     }
 }

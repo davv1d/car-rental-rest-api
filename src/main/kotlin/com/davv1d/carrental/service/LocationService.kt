@@ -16,7 +16,7 @@ class LocationService(
 
     fun secureSave(location: Location): Result<Location> = generalService.secureSave(location, locationRepository::save)
     fun save(location: Location): Result<Location> {
-        return locationDbValidator.dbValidate(location)
+        return locationDbValidator.valid(location, ::RuntimeException)
                 .flatMap { this.secureSave(it) }
     }
 
@@ -39,7 +39,7 @@ class LocationService(
     }
 
     fun deleteLocationById(id: Int): Result<Unit> {
-        return removeLocationValidator.dbValidate(id)
+        return removeLocationValidator.valid(id, ::RuntimeException)
                 .map { locationRepository.deleteById(it) }
     }
 }

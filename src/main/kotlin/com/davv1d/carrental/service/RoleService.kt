@@ -35,7 +35,7 @@ class RoleService(
     fun updateRole(role: Role): Result<Role> = saveOrUpdate(role, updateRoleValidator)
 
     fun saveOrUpdate(role: Role, validator: ConditionValidator<Role>): Result<Role> {
-        return roleDbValidator.dbValidate(role)
+        return roleDbValidator.valid(role, ::RuntimeException)
                 .map { r -> addPrivilegesToTheRole(r, privilegeService::getByNames, privilegeMapper::mapToNameSet) }
                 .flatMap(this::secureSave)
     }
@@ -50,7 +50,7 @@ class RoleService(
     fun secureSave(role: Role): Result<Role> = generalService.secureSave(role, roleRepository::save)
 
     fun deleteById(id: Int): Result<Unit> {
-        return removeRoleValidator.dbValidate(id)
+        return removeRoleValidator.valid(id, ::RuntimeException)
                 .map { roleRepository.deleteById(it) }
     }
 }

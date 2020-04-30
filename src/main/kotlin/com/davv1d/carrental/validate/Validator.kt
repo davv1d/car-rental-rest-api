@@ -2,37 +2,31 @@ package com.davv1d.carrental.validate
 
 import com.davv1d.carrental.constants.ERROR_SEPARATOR
 import com.davv1d.carrental.domain.Condition
-import com.davv1d.carrental.error.ElementExistsException
-import com.davv1d.carrental.fuctionHighLevel.joinToString
 import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.validate.condition.ConditionGenerator
 
 class Validator<T>(override val conditions: ConditionGenerator<T>) : ConditionValidator<T> {
-
-    fun <T> getErrorsMessages(conditions: List<Condition<T>>): List<String> {
-        return conditions.asSequence()
-                .filter(Condition<T>::invoke)
-                .map(Condition<T>::errorMessageIfTrue)
-                .toList()
+    override fun valid(value: T, error: (String) -> RuntimeException): Result<T> {
+        val conditionsList = conditions.get()
+        val errors = getAllErrors(value, conditionsList)
+        val errorMessage = prepareErrorMessage(errors)
+        return convertToResult(value, errorMessage, error, errors.isEmpty())
     }
 
-    fun <T> checkDoErrorsExist(value: T, errorsList: List<String>, error: (String) -> RuntimeException): Result<T> {
+    private fun convertToResult(value: T, errorMessage: String, error: (String) -> RuntimeException, isSuccess: Boolean): Result<T> {
         return when {
-            errorsList.isEmpty() -> { Result.invoke(value) }
-            else -> {
-                val message = errorsList.joinToString(separator = ERROR_SEPARATOR)
-                Result.failure(error(message))
-            }
+            isSuccess -> Result.invoke(value)
+            else -> Result.failure(error(errorMessage))
         }
     }
 
-    override fun dbValidate(value: T): Result<T> {
-        val conditions = conditions.get(value)
-        return validate(conditions, ::ElementExistsException)
+    fun prepareErrorMessage(errors: List<Condition<T>>): String {
+        return errors.asSequence().map { it.errorMessageIfTrue }.joinToString(separator = ERROR_SEPARATOR)
     }
 
-    override fun validate(conditions: List<Condition<T>>, error: (String) -> RuntimeException): Result<T> {
-        val errorsMessages = getErrorsMessages(conditions)
-        return checkDoErrorsExist(conditions[0].valueToCheck, errorsMessages, error)
+    fun <T> getAllErrors(value: T, conditions: List<Condition<T>>): List<Condition<T>> {
+        return conditions.asSequence()
+                .filter { conditionTest -> conditionTest.checkFunction.invoke(value) }
+                .toList()
     }
 }
