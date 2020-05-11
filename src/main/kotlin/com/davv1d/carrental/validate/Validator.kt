@@ -25,7 +25,7 @@ class Validator<T>(override val conditions: () -> List<Condition<T>>) : Conditio
 
     fun <T> getAllErrors(value: T, conditions: List<Condition<T>>): List<Condition<T>> {
         return conditions.asSequence()
-                .filter { conditionTest -> conditionTest.checkFunction.invoke(value) }
+                .filter { conditionTest -> !conditionTest.checkFunction.invoke(value) }
                 .toList()
     }
 }
