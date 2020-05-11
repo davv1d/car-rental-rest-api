@@ -30,9 +30,10 @@ interface VehicleRepository : CrudRepository<Vehicle, Int> {
     fun findByFuelType(fuelType: String): List<Vehicle>
 
     @Query(nativeQuery = true,
-            value = "select case when count(*) > 0 then true else false end from VEHICLES as v where (v.id = :id and v.registration not like :registration) and " +
+            value = "select case when count(*) > 0 then 'true' else 'false' end from vehicles as v where " +
+                    "((v.id = :id and upper(v.registration) not like upper(:registration)) or (select case when count(*) = 0 then 1 else 0 end from vehicles as v where v.id = :id)) and " +
                     "(select count(*) from vehicles as v where upper(v.registration) like upper(:registration))")
-    fun doesRegistrationExistUpdateVehicle(registration: String, id: Int): Boolean
+    fun doesRegistrationExistOrNotBelongToTheVehicleWithThisId(registration: String, id: Int): Boolean
 
     @Query(nativeQuery = true, value = "select * from vehicles as v join (select a.id, a.date, a.location_id, a.vehicle_id from vehicle_location as a join " +
             "(select vehicle_id, max(date) as max from vehicle_location where date <= :date1 group by vehicle_id) b on a.vehicle_id = b.vehicle_id and a.date = b.max and a.location_id = :locationId) c on v.id = c.vehicle_id")
