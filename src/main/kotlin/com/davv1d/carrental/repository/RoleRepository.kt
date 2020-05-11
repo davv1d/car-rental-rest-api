@@ -28,7 +28,7 @@ interface RoleRepository : CrudRepository<Role, Int> {
 
     @Query(nativeQuery = true,
             value = "select case when count(*) > 0 then true else false end from ROLES as r where " +
-                    "((r.id = :id and r.name not like :name) or (select case when count(*) = 0 then 1 else 0 end from ROLES as r where r.id = :id )) and " +
+                    "((r.id = :id and upper(r.name) not like upper(:name)) or (select case when count(*) = 0 then 1 else 0 end from ROLES as r where r.id = :id )) and " +
                     "(select count(*) from ROLES as r where upper(r.name) like upper(:name))")
     fun doesNameExistOrNotBelongToTheUserWithThisId(name: String, id: Int): Boolean
 
