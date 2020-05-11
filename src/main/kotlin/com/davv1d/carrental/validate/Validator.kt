@@ -20,7 +20,7 @@ class Validator<T>(override val conditions: () -> List<Condition<T>>) : Conditio
     }
 
     fun prepareErrorMessage(errors: List<Condition<T>>): String {
-        return errors.asSequence().map { it.errorMessageIfTrue }.joinToString(separator = ERROR_SEPARATOR)
+        return errors.asSequence().map { it.errorMessageIfFalse }.joinToString(separator = ERROR_SEPARATOR)
     }
 
     fun <T> getAllErrors(value: T, conditions: List<Condition<T>>): List<Condition<T>> {
