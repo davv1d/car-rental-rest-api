@@ -43,12 +43,12 @@ class RoleDbConditions(
     }
 
     private fun fetchPrivilegeExistConditions(): Condition<Role> {
-        return Condition("Not all privileges exist") { role -> areAllPrivilegesExist(role.privileges) }
+        return Condition("Not all privileges exist") { role -> doesAnyPrivilegeNotExist(role.privileges) }
     }
 
-    private fun areAllPrivilegesExist(privileges: Set<Privilege>): Boolean {
+    private fun doesAnyPrivilegeNotExist(privileges: Set<Privilege>): Boolean {
         val names = privileges.map { privilege -> privilege.name }.toSet()
         val fetchedPrivileges = privilegeRepository.getMany(names)
-        return privileges.size == fetchedPrivileges.size
+        return privileges.size != fetchedPrivileges.size
     }
 }
