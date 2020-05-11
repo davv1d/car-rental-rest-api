@@ -4,6 +4,9 @@ import com.davv1d.carrental.domain.*
 import com.davv1d.carrental.validate.ConditionValidator
 import com.davv1d.carrental.validate.Validator
 import com.davv1d.carrental.validate.condition.*
+import com.davv1d.carrental.validate.condition.LocationDbConditions
+import com.davv1d.carrental.validate.condition.PrivilegeDbConditions
+import com.davv1d.carrental.validate.condition.RoleDbConditions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,64 +14,53 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class ValidateConfig {
     @Autowired
-    lateinit var userDbConditions: ConditionGenerator<User>
+    lateinit var roleDbConditions: RoleDbConditions
     @Autowired
-    lateinit var roleDbConditions: ConditionGenerator<Role>
+    lateinit var userDbConditions: UserDbConditions
     @Autowired
-    lateinit var locationDbConditions: ConditionGenerator<Location>
+    lateinit var locationDbConditions: LocationDbConditions
     @Autowired
-    lateinit var privilegeDbConditions: ConditionGenerator<Privilege>
+    lateinit var vehicleDbConditions: VehicleDbConditions
     @Autowired
-    lateinit var updateRoleConditions: ConditionGenerator<Role>
+    lateinit var privilegeDbConditions: PrivilegeDbConditions
     @Autowired
-    lateinit var vehicleDbConditions: ConditionGenerator<Vehicle>
+    lateinit var vehicleLocationConditions: VehicleLocationConditions
     @Autowired
-    lateinit var updateVehicleConditions: ConditionGenerator<Vehicle>
-    @Autowired
-    lateinit var removeLocationConditions: ConditionGenerator<Int>
-    @Autowired
-    lateinit var removeRoleConditions: ConditionGenerator<Int>
-    @Autowired
-    lateinit var vehicleLocationConditions: ConditionGenerator<VehicleLocation>
-
-    @Autowired
-    lateinit var rentalSaveDateConditions: ConditionGenerator<Rental>
-    @Autowired
-    lateinit var rentalDbConditions: ConditionGenerator<Rental>
+    lateinit var rentalDbConditions: RentalDbConditions
 
     @Bean
-    fun userValidator(): ConditionValidator<User> = Validator(userDbConditions)
+    fun roleDbValidator(): ConditionValidator<Role> = Validator(roleDbConditions::fetchRoleSaveConditions)
 
     @Bean
-    fun roleDbValidator(): ConditionValidator<Role> = Validator(roleDbConditions)
+    fun updateRoleValidator(): ConditionValidator<Role> = Validator(roleDbConditions::fetchRoleUpdateConditions)
 
     @Bean
-    fun locationDbValidator(): ConditionValidator<Location> = Validator(locationDbConditions)
+    fun removeRoleValidator(): ConditionValidator<Int> = Validator(roleDbConditions::fetchRoleRemoveConditions)
 
     @Bean
-    fun removeLocationValidator(): ConditionValidator<Int> = Validator(removeLocationConditions)
+    fun userValidator(): ConditionValidator<User> = Validator(userDbConditions::fetchUserSaveConditions)
 
     @Bean
-    fun privilegeDbValidator(): ConditionValidator<Privilege> = Validator(privilegeDbConditions)
+    fun locationDbValidator(): ConditionValidator<Location> = Validator(locationDbConditions::fetchLocationSaveConditions)
 
     @Bean
-    fun updateRoleValidator(): ConditionValidator<Role> = Validator(updateRoleConditions)
+    fun removeLocationValidator(): ConditionValidator<Int> = Validator(locationDbConditions::fetchLocationRemoveConditions)
 
     @Bean
-    fun vehicleValidator(): ConditionValidator<Vehicle> = Validator(vehicleDbConditions)
+    fun vehicleValidator(): ConditionValidator<Vehicle> = Validator(vehicleDbConditions::fetchVehicleSaveConditions)
 
     @Bean
-    fun updateVehicleValidator(): ConditionValidator<Vehicle> = Validator(updateVehicleConditions)
+    fun updateVehicleValidator(): ConditionValidator<Vehicle> = Validator(vehicleDbConditions::fetchVehicleUpdateConditions)
 
     @Bean
-    fun removeRoleValidator(): ConditionValidator<Int> = Validator(removeRoleConditions)
+    fun privilegeDbValidator(): ConditionValidator<Privilege> = Validator(privilegeDbConditions::fetchPrivilegeSaveConditions)
 
     @Bean
-    fun vehicleLocationValidator(): ConditionValidator<VehicleLocation> = Validator(vehicleLocationConditions)
+    fun vehicleLocationValidator(): ConditionValidator<VehicleLocation> = Validator(vehicleLocationConditions::fetchVehicleLocationSaveConditions)
 
     @Bean
-    fun rentalSaveValidator(): ConditionValidator<Rental> = Validator(rentalDbConditions)
+    fun rentalSaveValidator(): ConditionValidator<Rental> = Validator(rentalDbConditions::fetchRentalSaveConditions)
 
     @Bean
-    fun rentalSaveDateValidator(): ConditionValidator<Rental> = Validator(rentalSaveDateConditions)
+    fun rentalSaveDateValidator(): ConditionValidator<Rental> = Validator(rentalDbConditions::fetchRentalDateConditions)
 }

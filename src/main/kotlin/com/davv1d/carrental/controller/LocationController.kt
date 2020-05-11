@@ -2,10 +2,7 @@ package com.davv1d.carrental.controller
 
 import com.davv1d.carrental.domain.dto.LocationDto
 import com.davv1d.carrental.mapper.LocationMapper
-import com.davv1d.carrental.repository.LocationRepository
 import com.davv1d.carrental.service.LocationService
-import com.davv1d.carrental.validate.condition.RemoveLocationConditions
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
