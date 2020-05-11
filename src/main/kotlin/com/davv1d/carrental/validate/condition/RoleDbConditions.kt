@@ -15,40 +15,40 @@ class RoleDbConditions(
 ) {
 
     fun fetchRoleSaveConditions(): List<Condition<Role>> {
-        val roleCondition = Condition<Role>(ROLE_EXIST_IN_DATABASE) { role -> roleRepository.existsByName(role.name) }
-        val privilegesConditions = fetchPrivilegeExistConditions()
+        val roleCondition = Condition<Role>(ROLE_EXIST_IN_DATABASE) { role -> roleRepository.doesRoleNameNotExist(role.name) }
+        val privilegesConditions = fetchPrivilegesExistConditions()
         return listOf(roleCondition, privilegesConditions)
     }
 
     fun fetchRoleUpdateConditions(): List<Condition<Role>> {
-        val idCondition = Condition<Role>("ID DOES NOT EXIST") { role -> roleRepository.doesRoleNotExistById(role.id) }
-        val nameCondition = Condition<Role>("NAME EXISTS") { role -> roleRepository.doesNameExistOrNotBelongToTheUserWithThisId(role.name, role.id) }
-        val privilegesConditions = fetchPrivilegeExistConditions()
+        val idCondition = Condition<Role>("ID DOES NOT EXIST") { role -> roleRepository.existsById(role.id) }
+        val nameCondition = Condition<Role>("NAME EXISTS") { role -> roleRepository.doesNameNotExistOrBelongToTheUserWithThisId(role.name, role.id) }
+        val privilegesConditions = fetchPrivilegesExistConditions()
         return listOf(idCondition, nameCondition, privilegesConditions)
     }
 
     fun fetchRoleRemoveConditions(): List<Condition<Int>> {
-        val condition1 = Condition<Int>("ROLE WITH THIS ID NOT EXIST") { !roleRepository.findById(it).isPresent }
-        val condition2 = Condition<Int>("USERS HAVE THIS ROLE") { roleRepository.areThereUsersWithThisRole(it) }
-        val condition3 = Condition<Int>("ROLE ADMIN CAN NOT BE REMOVE") { isRoleNameAdmin(it) }
+        val condition1 = Condition<Int>("ROLE WITH THIS ID NOT EXIST") { id -> roleRepository.existsById(id) }
+        val condition2 = Condition<Int>("USERS HAVE THIS ROLE") { id -> roleRepository.doUsersNotHaveRoleWithThisId(id) }
+        val condition3 = Condition<Int>("ROLE ADMIN CAN NOT BE REMOVE") { id -> isRoleNameNotAdmin(id) }
         return listOf(condition1, condition2, condition3)
     }
 
-    private fun isRoleNameAdmin(id: Int): Boolean {
+    private fun isRoleNameNotAdmin(id: Int): Boolean {
         val optionalRole = roleRepository.findById(id)
         return when (optionalRole.isPresent) {
-            true -> optionalRole.get().name.equals(other = "ADMIN", ignoreCase = true)
-            else -> false
+            true -> !optionalRole.get().name.equals(other = "ADMIN", ignoreCase = true)
+            else -> true
         }
     }
 
-    private fun fetchPrivilegeExistConditions(): Condition<Role> {
-        return Condition("Not all privileges exist") { role -> doesAnyPrivilegeNotExist(role.privileges) }
+    private fun fetchPrivilegesExistConditions(): Condition<Role> {
+        return Condition("Not all privileges exist") { role -> doPrivilegesExist(role.privileges) }
     }
 
-    private fun doesAnyPrivilegeNotExist(privileges: Set<Privilege>): Boolean {
+    private fun doPrivilegesExist(privileges: Set<Privilege>): Boolean {
         val names = privileges.map { privilege -> privilege.name }.toSet()
         val fetchedPrivileges = privilegeRepository.getMany(names)
-        return privileges.size != fetchedPrivileges.size
+        return privileges.size == fetchedPrivileges.size
     }
 }
