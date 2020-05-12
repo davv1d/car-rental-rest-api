@@ -14,13 +14,13 @@ class RoleMapper(val privilegeMapper: PrivilegeMapper) {
 
     fun mapToRoleToSave(roleDto: RoleDto): Role {
         return with(roleDto) {
-            Role(name = roleName, privileges = privilegeMapper.mapToPrivilegeSet(privileges))
+            Role(0, roleName, privilegeMapper.mapToPrivilegeSet(privileges))
         }
     }
 
-    fun mapToRoleToUpdate(roleDto: RoleDto): Role {
+    fun mapToRole(roleDto: RoleDto): Role {
         return with(roleDto) {
-            Role(id = id, name = roleName, privileges = privilegeMapper.mapToPrivilegeSet(privileges))
+            Role(id, roleName, privilegeMapper.mapToPrivilegeSet(privileges))
         }
     }
 }
