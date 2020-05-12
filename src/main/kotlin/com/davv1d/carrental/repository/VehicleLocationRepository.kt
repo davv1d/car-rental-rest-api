@@ -17,4 +17,7 @@ interface VehicleLocationRepository : CrudRepository<VehicleLocation, Int> {
     fun findVehicleLocationsToSpecificDateByVehicleId(date: LocalDateTime, vehicleId: Int): List<VehicleLocation>
 
     fun findByDateAndVehicle_Id(date: LocalDateTime, vehicleId: Int): Optional<VehicleLocation>
+
+    @Query(value = "select case when count(vl) = 0 then true else false end from VehicleLocation as vl where vl.location.id = :locationId")
+    fun isLocationNotUsedInVehicleLocation(locationId: Int): Boolean
 }
