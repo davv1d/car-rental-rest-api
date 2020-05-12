@@ -19,4 +19,8 @@ class VehicleMapper(private val locationMapper: LocationMapper) {
                 .map { mapToVehicleDto(it) }
                 .toList()
     }
+
+    fun mapToVehicleForSave(vehicleDto: VehicleDto): Vehicle = with(vehicleDto) {
+        Vehicle(0, registration, brand, model, dailyFee, bodyType, productionYear, fuelType, power)
+    }
 }
