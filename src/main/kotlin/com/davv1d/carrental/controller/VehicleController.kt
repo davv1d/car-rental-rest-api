@@ -44,4 +44,10 @@ class VehicleController(private val vehicleService: VehicleService, private val 
     fun update(@RequestBody @Valid vehicleDto: VehicleDto): VehicleDto =
          vehicleService.update(vehicleMapper.mapToVehicle(vehicleDto))
                 .effect(onSuccess = vehicleMapper::mapToVehicleDto, onFailure = { writeAndThrowError(logger, it) }, onEmpty = { VehicleDto() })
+
+    @DeleteMapping(value = ["/vehicle"], params = ["vehicleId"])
+    fun deleteById(vehicleId: Int) {
+        vehicleService.deleteById(vehicleId)
+                .forEach(onSuccess = { println("delete vehicle with id = $vehicleId")}, onFailure = { throw it })
+    }
 }
