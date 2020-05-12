@@ -16,7 +16,7 @@ class VehicleController(private val vehicleService: VehicleService, private val 
 
     @PostMapping(value = ["/vehicle"])
     fun saveVehicle(@RequestBody @Valid vehicleDto: VehicleDto) =
-            vehicleService.save(vehicleMapper.mapToVehicle(vehicleDto))
+            vehicleService.save(vehicleMapper.mapToVehicleForSave(vehicleDto))
                     .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
 
     @GetMapping(value = ["/vehicle"])
