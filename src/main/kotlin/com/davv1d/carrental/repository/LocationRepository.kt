@@ -35,4 +35,8 @@ interface LocationRepository : CrudRepository<Location, Int> {
             value = "select case when count(*) > 0 then 'true' else 'false' end from VEHICLES as V where V.LOCATION_ID like :id")
     fun areThereVehiclesInLocation(id: Int): Boolean
 
+    @Query(nativeQuery = true,
+            value = "select case when count(*) = then 'true' else 'false' end from VEHICLES as V where V.LOCATION_ID like :id")
+    fun areThereNoVehiclesInThisLocation(id: Int): Boolean
+
 }
