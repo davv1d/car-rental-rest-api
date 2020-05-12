@@ -12,8 +12,8 @@ class VehicleLocationConditions(
         private val locationRepository: LocationRepository) {
 
     fun fetchVehicleLocationSaveConditions(): List<Condition<VehicleLocation>> {
-        val condition1 = Condition<VehicleLocation>("LOCATION NOT EXIST") { vehicleLocation -> locationRepository.doesLocationNotExistById(vehicleLocation.location.id) }
-        val condition2 = Condition<VehicleLocation>("VEHICLE NOT EXIST") { vehicleLocation -> vehicleRepository.doesIdNotExist(vehicleLocation.vehicle.id) }
+        val condition1 = Condition<VehicleLocation>("LOCATION NOT EXIST") { vehicleLocation -> locationRepository.existsById(vehicleLocation.location.id) }
+        val condition2 = Condition<VehicleLocation>("VEHICLE NOT EXIST") { vehicleLocation -> vehicleRepository.existsById(vehicleLocation.vehicle.id) }
         return listOf(condition1, condition2)
     }
 }
