@@ -22,4 +22,7 @@ interface RentalRepository : CrudRepository<Rental, Int> {
 
     @Query(value = "select case when count(r) = 0 then true else false end from Rental r where r.vehicle.id = :vehicleId")
     fun isVehicleNotUsedInRental(vehicleId: Int): Boolean
+
+    @Query(value = "select case when count(r) = 0 then true else false end from Rental r where r.startLocation.id = :locationId or r.endLocation.id = :locationId")
+    fun isLocationNotUsedInRental(locationId: Int): Boolean
 }
