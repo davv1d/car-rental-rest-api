@@ -48,7 +48,7 @@ class RoleDbConditions(
 
     private fun doPrivilegesExist(privileges: Set<Privilege>): Boolean {
         val names = privileges.map { privilege -> privilege.name }.toSet()
-        val fetchedPrivileges = privilegeRepository.getMany(names)
+        val fetchedPrivileges = privilegeRepository.findPrivilegesByNames(names)
         return privileges.size == fetchedPrivileges.size
     }
 }
