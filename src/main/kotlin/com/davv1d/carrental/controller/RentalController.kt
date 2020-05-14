@@ -2,7 +2,6 @@ package com.davv1d.carrental.controller
 
 import com.davv1d.carrental.domain.dto.RentalDto
 import com.davv1d.carrental.domain.dto.SaveRentalDto
-import com.davv1d.carrental.domain.dto.UpdateRentalVehicleDto
 import com.davv1d.carrental.facade.RentalFacade
 import com.davv1d.carrental.fuctionHighLevel.writeAndThrowError
 import com.davv1d.carrental.mapper.RentalMapper
@@ -34,13 +33,13 @@ class RentalController(
 
     @PostMapping(value = ["/rental"])
     fun save(@RequestBody @Valid saveRentalDto: SaveRentalDto) {
-        rentalFacade.saveRental(rentalMapper.mapToRental(saveRentalDto))
+        rentalFacade.saveRental(rentalMapper.mapToRentalForSave(saveRentalDto))
                 .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
     }
 
     @PutMapping(value = ["/rental"])
-    fun changeRentalVehicle(@RequestBody @Valid updateRentalVehicleDto: UpdateRentalVehicleDto) {
-        rentalFacade.changeRentalVehicle(rentalMapper.mapToRental(updateRentalVehicleDto))
+    fun changeRentalVehicle(@RequestBody @Valid saveRentalDto: SaveRentalDto) {
+        rentalFacade.changeRentalVehicle(rentalMapper.mapToRentalForUpdate(saveRentalDto))
                 .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
     }
 }

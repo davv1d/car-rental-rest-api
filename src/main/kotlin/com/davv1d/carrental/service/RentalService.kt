@@ -1,9 +1,6 @@
 package com.davv1d.carrental.service
 
-import com.davv1d.carrental.domain.Location
-import com.davv1d.carrental.domain.Rental
-import com.davv1d.carrental.domain.User
-import com.davv1d.carrental.domain.Vehicle
+import com.davv1d.carrental.domain.*
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
 import com.davv1d.carrental.repository.RentalRepository
@@ -17,7 +14,7 @@ class RentalService(
         private val rentalSaveDateValidator: ConditionValidator<Rental>,
         private val rentalSaveValidator: ConditionValidator<Rental>,
         private val generalService: GeneralService,
-        private val rentalUpdateValidator: ConditionValidator<Rental>,
+        private val rentalChangeVehicleValidator: ConditionValidator<Rental>,
         private val locationService: LocationService,
         private val userService: UserService,
         private val vehicleService: VehicleService) {
@@ -36,14 +33,11 @@ class RentalService(
     }
 
     fun changeRentalVehicle(rental: Rental): Result<Pair<Vehicle, Result<Rental>>> {
-        return getById(rental)
+        return rentalChangeVehicleValidator.valid(rental, ::RuntimeException)
+                .flatMap(this::getById)
                 .flatMap { oldRental ->
-                    rentalUpdateValidator.valid(Rental(id = oldRental.id, dateOfRent = oldRental.dateOfRent, dateOfReturn = oldRental.dateOfReturn, vehicle = rental.vehicle, startLocation = oldRental.startLocation, endLocation = oldRental.endLocation, user = oldRental.user), ::RuntimeException)
-                            .map { r ->
-                                vehicleService.getById(r.vehicle.id)
-                                        .map { newVehicle -> with(oldRental) { Rental(id, dateOfRent, dateOfReturn, newVehicle, user, startLocation, endLocation) } }
-                            }
-                            .map { newRental -> Pair(oldRental.vehicle, newRental.flatMap { secureSave(it) }) }
+                    addUserVehicleAndLocationsToTheRental(rental, vehicleService::getById, userService::getUserByName, locationService::getById)
+                            .map { newRental -> Pair(oldRental.vehicle, this.secureSave(newRental)) }
                 }
     }
 

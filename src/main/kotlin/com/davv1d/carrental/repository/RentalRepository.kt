@@ -25,4 +25,8 @@ interface RentalRepository : CrudRepository<Rental, Int> {
 
     @Query(value = "select case when count(r) = 0 then true else false end from Rental r where r.startLocation.id = :locationId or r.endLocation.id = :locationId")
     fun isLocationNotUsedInRental(locationId: Int): Boolean
+
+    @Query(value = "select case when count(r) > 0 then true else false end from Rental r where r.id = :rentalId and r.dateOfRent = :dateOfRent and r.dateOfReturn = :dateOfReturn " +
+            "and r.startLocation.id = :startLocationId and r.endLocation.id = :endLocationId and r.user.username like :username")
+    fun doesRentalExist(rentalId: Int, dateOfRent: LocalDateTime, dateOfReturn: LocalDateTime, startLocationId: Int, endLocationId: Int, username: String): Boolean
 }

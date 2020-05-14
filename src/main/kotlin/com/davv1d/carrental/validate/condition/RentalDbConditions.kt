@@ -17,27 +17,22 @@ class RentalDbConditions(
         private val rentalRepository: RentalRepository) {
 
     fun fetchRentalSaveConditions(): List<Condition<Rental>> {
-        val (vehicleConditions, startLocationConditions, endLocationConditions) = fetchVehicleAndLocationConditions()
-        val userConditions = Condition<Rental>("USER NOT EXIST") { rental -> userRepository.existsByUsernameAmongActiveUsers(rental.user.username) }
-        return listOf(vehicleConditions, startLocationConditions, endLocationConditions, userConditions)
+        val userCondition = Condition<Rental>("USER NOT EXIST") { rental -> userRepository.existsByUsernameAmongActiveUsers(rental.user.username) }
+        val vehicleCondition = Condition<Rental>("VEHICLE NOT AVAILABLE") { rental -> with(rental) { vehicleRepository.doesVehicleExistInAvailableVehicles(dateOfRent, dateOfReturn, startLocation.id, vehicle.id) } }
+        val startLocationCondition = Condition<Rental>("START LOCATION NOT EXIST") { rental -> locationRepository.existsById(rental.startLocation.id) }
+        val endLocationCondition = Condition<Rental>("END LOCATION NOT EXIST") { rental -> locationRepository.existsById(rental.endLocation.id) }
+        return listOf(vehicleCondition, startLocationCondition, endLocationCondition, userCondition)
     }
 
     fun fetchRentalDateConditions(): List<Condition<Rental>> {
-        val condition1 = Condition<Rental>("DATE OF RENT IS BEFORE CURRENT DATE + 1H") { rental -> with(rental) { dateOfRent.isAfter(LocalDateTime.now().plusHours(1)) } }
-        val condition2 = Condition<Rental>("DATE OF RENT + 1H IS AFTER DATE OF RETURN") { rental -> with(rental) { dateOfRent.isBefore(dateOfReturn.minusHours(1)) } }
-        return listOf(condition1, condition2)
+        val dateCondition1 = Condition<Rental>("DATE OF RENT IS BEFORE CURRENT DATE + 1H") { rental -> with(rental) { dateOfRent.isAfter(LocalDateTime.now().plusHours(1)) } }
+        val dateCondition2 = Condition<Rental>("DATE OF RENT + 1H IS AFTER DATE OF RETURN") { rental -> with(rental) { dateOfRent.isBefore(dateOfReturn.minusHours(1)) } }
+        return listOf(dateCondition1, dateCondition2)
     }
 
-    fun fetchRentalUpdateConditions(): List<Condition<Rental>> {
-        val condition1 = Condition<Rental>("RENTAL ID DOES NOT EXIST") { rental -> rentalRepository.existsById(rental.id) }
-        val vehicleConditions = Condition<Rental>("VEHICLE NOT AVAILABLE") { rental -> with(rental) { vehicleRepository.doesVehicleExistInAvailableVehicles(dateOfRent, dateOfReturn, startLocation.id, vehicle.id) } }
-        return listOf(condition1, vehicleConditions)
-    }
-
-    private fun fetchVehicleAndLocationConditions(): Triple<Condition<Rental>, Condition<Rental>, Condition<Rental>> {
-        val vehicleConditions = Condition<Rental>("VEHICLE NOT AVAILABLE") { rental -> with(rental) { vehicleRepository.doesVehicleExistInAvailableVehicles(dateOfRent, dateOfReturn, startLocation.id, vehicle.id) } }
-        val startLocationConditions = Condition<Rental>("START LOCATION NOT EXIST") { rental -> locationRepository.existsById(rental.startLocation.id) }
-        val endLocationConditions = Condition<Rental>("END LOCATION NOT EXIST") { rental -> locationRepository.existsById(rental.endLocation.id) }
-        return Triple(vehicleConditions, startLocationConditions, endLocationConditions)
+    fun fetchRentalChangeVehicleConditions(): List<Condition<Rental>> {
+        val rentalWithoutVehicleCondition = Condition<Rental>("RENTAL DOES NOT EXIST") { rental -> with(rental) { rentalRepository.doesRentalExist(id, dateOfRent, dateOfReturn, startLocation.id, endLocation.id, user.username) } }
+        val vehicleCondition = Condition<Rental>("VEHICLE NOT AVAILABLE") { rental -> with(rental) { vehicleRepository.doesVehicleExistInAvailableVehicles(dateOfRent, dateOfReturn, startLocation.id, vehicle.id) } }
+        return listOf(rentalWithoutVehicleCondition, vehicleCondition)
     }
 }
