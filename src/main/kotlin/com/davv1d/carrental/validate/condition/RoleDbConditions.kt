@@ -15,7 +15,7 @@ class RoleDbConditions(
 ) {
 
     fun fetchRoleSaveConditions(): List<Condition<Role>> {
-        val roleCondition = Condition<Role>(ROLE_EXIST_IN_DATABASE) { role -> roleRepository.doesRoleNameNotExist(role.name) }
+        val roleCondition = Condition<Role>(ROLE_EXIST_IN_DATABASE) { role -> roleRepository.doesRoleNotExistByName(role.name) }
         val privilegesConditions = fetchPrivilegesExistConditions()
         return listOf(roleCondition, privilegesConditions)
     }

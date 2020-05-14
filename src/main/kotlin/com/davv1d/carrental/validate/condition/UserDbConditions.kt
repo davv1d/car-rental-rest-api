@@ -17,7 +17,7 @@ class UserDbConditions(
     fun fetchUserSaveConditions(): List<Condition<User>> {
         val con1 = Condition<User>(USERNAME_EXIST_IN_DATABASE) { u -> userRepository.doesUsernameNotExist(u.username) }
         val con2 = Condition<User>(EMAIL_EXIST_IN_DATABASE) { u -> userRepository.doesEmailNotExist(u.email) }
-        val con3 = Condition<User>(ROLE_WITH_THIS_NAME_IS_NOT_EXIST) { u -> roleRepository.doesRoleNameExist(u.role.name) }
+        val con3 = Condition<User>(ROLE_WITH_THIS_NAME_IS_NOT_EXIST) { u -> roleRepository.doesRoleExistByName(u.role.name) }
         return listOf(con1, con2, con3)
     }
 }
