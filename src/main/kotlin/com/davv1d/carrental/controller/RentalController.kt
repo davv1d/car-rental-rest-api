@@ -2,14 +2,13 @@ package com.davv1d.carrental.controller
 
 import com.davv1d.carrental.domain.dto.RentalDto
 import com.davv1d.carrental.domain.dto.SaveRentalDto
+import com.davv1d.carrental.domain.dto.UpdateRentalVehicleDto
 import com.davv1d.carrental.facade.RentalFacade
 import com.davv1d.carrental.fuctionHighLevel.writeAndThrowError
 import com.davv1d.carrental.mapper.RentalMapper
 import com.davv1d.carrental.service.RentalService
-import com.davv1d.carrental.service.VehicleLocationService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
-import java.security.Principal
 import javax.validation.Valid
 
 @RestController
@@ -36,6 +35,12 @@ class RentalController(
     @PostMapping(value = ["/rental"])
     fun save(@RequestBody @Valid saveRentalDto: SaveRentalDto) {
         rentalFacade.saveRental(rentalMapper.mapToRental(saveRentalDto))
+                .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
+    }
+
+    @PutMapping(value = ["/rental"])
+    fun changeRentalVehicle(@RequestBody @Valid updateRentalVehicleDto: UpdateRentalVehicleDto) {
+        rentalFacade.changeRentalVehicle(rentalMapper.mapToRental(updateRentalVehicleDto))
                 .forEach(onSuccess = ::println, onFailure = { writeAndThrowError(logger, it) })
     }
 }

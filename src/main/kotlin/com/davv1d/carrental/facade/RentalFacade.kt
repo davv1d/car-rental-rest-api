@@ -32,4 +32,18 @@ class RentalFacade(
                             }
                 }
     }
+
+    fun changeRentalVehicle(rental: Rental): Result<Rental> {
+        return rentalService.changeRentalVehicle(rental)
+                .flatMap { oldVehicleAndRental ->
+                    oldVehicleAndRental.second
+                            .map { newRental ->
+                                val vehicleLocation = VehicleLocation(date = newRental.dateOfReturn, location = newRental.endLocation, vehicle = newRental.vehicle)
+                                vehicleLocationService.vehicleLocationSecureSave(vehicleLocation).map { newRental }
+                                vehicleLocationService.getByDateAndVehicleId(newRental.dateOfReturn, oldVehicleAndRental.first.id)
+                                        .map { vl -> vehicleLocationService.delete(vl.id) }
+                                return@map newRental
+                            }
+                }
+    }
 }

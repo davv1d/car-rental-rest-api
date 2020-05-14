@@ -17,6 +17,7 @@ class RentalService(
         private val rentalSaveDateValidator: ConditionValidator<Rental>,
         private val rentalSaveValidator: ConditionValidator<Rental>,
         private val generalService: GeneralService,
+        private val rentalUpdateValidator: ConditionValidator<Rental>,
         private val locationService: LocationService,
         private val userService: UserService,
         private val vehicleService: VehicleService) {
@@ -34,16 +35,37 @@ class RentalService(
                 .flatMap { rentalSaveValidator.valid(it, ::RuntimeException) }
     }
 
+    fun changeRentalVehicle(rental: Rental): Result<Pair<Vehicle, Result<Rental>>> {
+        return getById(rental)
+                .flatMap { oldRental ->
+                    rentalUpdateValidator.valid(Rental(id = oldRental.id, dateOfRent = oldRental.dateOfRent, dateOfReturn = oldRental.dateOfReturn, vehicle = rental.vehicle, startLocation = oldRental.startLocation, endLocation = oldRental.endLocation, user = oldRental.user), ::RuntimeException)
+                            .map { r ->
+                                vehicleService.getById(r.vehicle.id)
+                                        .map { newVehicle -> with(oldRental) { Rental(id, dateOfRent, dateOfReturn, newVehicle, user, startLocation, endLocation) } }
+                            }
+                            .map { newRental -> Pair(oldRental.vehicle, newRental.flatMap { secureSave(it) }) }
+                }
+    }
+
     fun addUserVehicleAndLocationsToTheRental(rental: Rental, fetchVehicle: (Int) -> Result<Vehicle>, fetchUser: (String) -> Result<User>, fetchLocation: (Int) -> Result<Location>): Result<Rental> {
         return fetchVehicle.invoke(rental.vehicle.id)
-                .flatMap { vehicle -> fetchUser.invoke(rental.user.username)
-                            .flatMap { user -> fetchLocation.invoke(rental.startLocation.id)
-                                        .flatMap { startLocation -> fetchLocation.invoke(rental.endLocation.id)
+                .flatMap { vehicle ->
+                    fetchUser.invoke(rental.user.username)
+                            .flatMap { user ->
+                                fetchLocation.invoke(rental.startLocation.id)
+                                        .flatMap { startLocation ->
+                                            fetchLocation.invoke(rental.endLocation.id)
                                                     .map { endLocation -> with(rental) { Rental(id, dateOfRent, dateOfReturn, vehicle, user, startLocation, endLocation) } }
                                         }
                             }
                 }
     }
+
+    fun getById(rental: Rental): Result<Rental> = generalService.getByValue(
+            value = rental.id,
+            error = NotFoundElementException("RENTAL ID DOES NOT EXIST"),
+            function = rentalRepository::findById
+    )
 
     fun getAll(): List<Rental> = rentalRepository.findAll()
     fun getByVehicleId(vehicleId: Int): List<Rental> = rentalRepository.findByVehicle_Id(vehicleId)
@@ -57,5 +79,4 @@ class RentalService(
             error = NotFoundElementException("RENTAL_WITH_THIS_ID_IS_NOT_EXIST"),
             deleteFunction = rentalRepository::deleteById
     )
-
 }

@@ -3,7 +3,9 @@ package com.davv1d.carrental.mapper
 import com.davv1d.carrental.domain.*
 import com.davv1d.carrental.domain.dto.RentalDto
 import com.davv1d.carrental.domain.dto.SaveRentalDto
+import com.davv1d.carrental.domain.dto.UpdateRentalVehicleDto
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class RentalMapper(
@@ -23,5 +25,13 @@ class RentalMapper(
         val startLocation = Location(id = startLocationId, city = "", street = "")
         val endLocation = Location(id = endLocationId, city = "", street = "")
         Rental(0, dateOfRent, dateOfReturn, vehicle, user, startLocation, endLocation)
+    }
+
+    fun mapToRental(updateRentalVehicleDto: UpdateRentalVehicleDto): Rental = with(updateRentalVehicleDto) {
+        val vehicle = Vehicle(id = vehicleId)
+        val user = User(username = "", email = "", password = "", role = Role(name = ""))
+        val startLocation = Location(city = "", street = "")
+        val endLocation = Location(city = "", street = "")
+        Rental(rentalId, LocalDateTime.now(), LocalDateTime.now(), vehicle, user, startLocation, endLocation)
     }
 }

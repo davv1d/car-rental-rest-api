@@ -25,4 +25,9 @@ class VehicleLocationController(
     fun save(@RequestBody @Valid vehicleLocationDto: VehicleLocationDto) =
             vehicleLocationService.saveWithValidation(vehicleLocationMapper.mapToVehicleLocation(vehicleLocationDto))
                     .forEach(onSuccess = { logger.info(it.toString()) }, onFailure = { writeAndThrowError(logger, it) })
+
+    @DeleteMapping(value = ["/vehicle-location"], params = ["id"])
+    fun delete(id: Int) {
+        vehicleLocationService.delete(id)
+    }
 }

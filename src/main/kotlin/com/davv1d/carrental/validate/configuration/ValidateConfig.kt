@@ -66,4 +66,7 @@ class ValidateConfig {
 
     @Bean
     fun rentalSaveDateValidator(): ConditionValidator<Rental> = Validator(rentalDbConditions::fetchRentalDateConditions)
+
+    @Bean
+    fun rentalUpdateValidator(): ConditionValidator<Rental> = Validator(rentalDbConditions::fetchRentalUpdateConditions)
 }
