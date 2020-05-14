@@ -1,21 +1,22 @@
 package com.davv1d.carrental.service
 
 import com.davv1d.carrental.domain.Vehicle
-import com.davv1d.carrental.domain.VehicleLocation
 import com.davv1d.carrental.error.NotFoundElementException
 import com.davv1d.carrental.pierre.Result
+import com.davv1d.carrental.repository.VehicleLocationRepository
 import com.davv1d.carrental.repository.VehicleRepository
 import com.davv1d.carrental.validate.ConditionValidator
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 class VehicleService(
         private val vehicleRepository: VehicleRepository,
-        private val vehicleValidator: ConditionValidator<Vehicle>,
         private val generalService: GeneralService,
-        private val updateVehicleValidator: ConditionValidator<Vehicle>) {
+        private val vehicleValidator: ConditionValidator<Vehicle>,
+        private val updateVehicleValidator: ConditionValidator<Vehicle>,
+        private val vehicleRemovalValidator: ConditionValidator<Int>,
+        private val vehicleLocationRepository: VehicleLocationRepository) {
 
     fun getAll(): List<Vehicle> = vehicleRepository.findAll()
 
@@ -44,6 +45,12 @@ class VehicleService(
     private fun saveWithValidation(vehicle: Vehicle, validator: ConditionValidator<Vehicle>): Result<Vehicle> {
         return validator.valid(vehicle, ::RuntimeException)
                 .flatMap { secureSave(it) }
+    }
+
+    fun deleteById(vehicleId: Int): Result<Unit> {
+        return vehicleRemovalValidator.valid(vehicleId, ::RuntimeException)
+                .map { vehicleRepository.deleteById(vehicleId) }
+                .map { vehicleLocationRepository.deleteAllByVehicleId(vehicleId) }
     }
 
     private fun secureSave(vehicle: Vehicle): Result<Vehicle> = generalService.secureSave(vehicle, vehicleRepository::save)

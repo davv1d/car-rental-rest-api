@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 @Component
 class PrivilegeDbConditions(private val privilegeRepository: PrivilegeRepository) {
     fun fetchPrivilegeSaveConditions(): List<Condition<Privilege>> {
-        val con1 = Condition<Privilege>("Privilege is exist") { p -> privilegeRepository.existsByName(p.name) }
+        val con1 = Condition<Privilege>("Privilege is exist") { p -> privilegeRepository.doesNotExistByName(p.name) }
         return listOf(con1)
     }
 }

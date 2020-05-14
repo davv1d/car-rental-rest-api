@@ -50,6 +50,9 @@ class ValidateConfig {
     fun vehicleValidator(): ConditionValidator<Vehicle> = Validator(vehicleDbConditions::fetchVehicleSaveConditions)
 
     @Bean
+    fun vehicleRemovalValidator(): ConditionValidator<Int> = Validator(vehicleDbConditions::fetchVehicleRemoveConditions)
+
+    @Bean
     fun updateVehicleValidator(): ConditionValidator<Vehicle> = Validator(vehicleDbConditions::fetchVehicleUpdateConditions)
 
     @Bean
