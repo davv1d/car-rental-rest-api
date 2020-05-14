@@ -14,14 +14,8 @@ import javax.transaction.Transactional
 interface VehicleRepository : CrudRepository<Vehicle, Int> {
     override fun findAll(): List<Vehicle>
 
-    @Query(value = "select case when count(v) > 0 then true else false end from Vehicle v where upper(v.registration) like upper(:registration)")
-    fun doesRegistrationExist(registration: String): Boolean
-
     @Query(value = "select case when count(v) = 0 then true else false end from Vehicle v where upper(v.registration) like upper(:registration)")
     fun doesRegistrationNotExist(registration: String): Boolean
-
-    @Query(value = "select case when count(v) = 0 then true else false end from Vehicle v where v.id = :id")
-    fun doesIdNotExist(id: Int): Boolean
 
     @Query(value = "select v from Vehicle v where upper(v.registration) like upper(:registration)")
     fun findByRegistration(registration: String): Optional<Vehicle>
@@ -31,12 +25,6 @@ interface VehicleRepository : CrudRepository<Vehicle, Int> {
 
     @Query(value = "select v from Vehicle v where upper(v.fuelType) like upper(:fuelType)")
     fun findByFuelType(fuelType: String): List<Vehicle>
-
-    @Query(nativeQuery = true,
-            value = "select case when count(*) > 0 then 'true' else 'false' end from vehicles as v where " +
-                    "((v.id = :id and upper(v.registration) not like upper(:registration)) or (select case when count(*) = 0 then 1 else 0 end from vehicles as v where v.id = :id)) and " +
-                    "(select count(*) from vehicles as v where upper(v.registration) like upper(:registration))")
-    fun doesRegistrationExistOrNotBelongToTheVehicleWithThisId(registration: String, id: Int): Boolean
 
     @Query(nativeQuery = true,
             value = "select case when count(*) > 0 then true else false end from vehicles as v where " +
